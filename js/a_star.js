@@ -22,24 +22,14 @@ const astar = {
         var openHeap = astar.heap();
         start.f = 100000000000;
         openHeap.push(start);
-        let paths = {};
-        let pathCount = 0;
+        let paths = [];
         while(openHeap.length > 0) {
 
             // Grab the lowest f(x) to process next.  Heap keeps this sorted for us.
-            pathCount ++;
             var currentAirport = openHeap.shift();
-            paths[pathCount] = [currentAirport];
+            paths.push([currentAirport]);
             // End case -- result has been found, return the traced path.
             if(currentAirport === end) {
-
-                // var curr = currentAirport;
-                // var ret = [];
-                // while(curr.parent) {
-                //     ret.push(curr);
-                //     curr = curr.parent;
-                // }
-                // return ret.reverse();
                 return paths;
             }
 
@@ -51,12 +41,10 @@ const astar = {
                 let neighborAirport = airports[neighbor];
                 neighborAirport.cost = neighbors[neighbor];
                 if(neighborAirport.closed) {
-                    // Not a valid node to process, skip to next neighbor.
+                    
                     continue;
                 }
-                paths[pathCount].push(neighborAirport);
-                // The g score is the shortest distance from start to current node.
-                // We need to check if the path we have arrived at this neighbor is the shortest one we have seen yet.
+                paths[paths.length - 1].push(neighborAirport);
                 var gScore = currentAirport.g + neighborAirport.cost;
                 var beenVisited = neighborAirport.visited;
 

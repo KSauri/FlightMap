@@ -35,11 +35,6 @@ function PriorityQueue(compare, queue) {
     return queue[0];
   };
 
-  // this.deleteAt = (idx) => {
-  //   remove(idx);
-  // };
-
-
   this.push = function push(/* element, ... */) {
     var i = queue.length, e = i + arguments.length, j, p;
     queue.push.apply(queue, arguments);
@@ -71,9 +66,7 @@ function left(i)   { return 2 * i + 1; }
 function right(i)  { return 2 * i + 2; }
 function parent(i) { return Math.floor((i + 1) / 2) - 1; }
 
-
 function min_first(a, b) { return a.f - b.f; }
-
 
 export default PriorityQueue;
 

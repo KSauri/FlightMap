@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -146,7 +146,7 @@ const airports = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(6);
 
 
 const astar = {
@@ -171,24 +171,14 @@ const astar = {
         var openHeap = astar.heap();
         start.f = 100000000000;
         openHeap.push(start);
-        let paths = {};
-        let pathCount = 0;
+        let paths = [];
         while(openHeap.length > 0) {
 
             // Grab the lowest f(x) to process next.  Heap keeps this sorted for us.
-            pathCount ++;
             var currentAirport = openHeap.shift();
-            paths[pathCount] = [currentAirport];
+            paths.push([currentAirport]);
             // End case -- result has been found, return the traced path.
             if(currentAirport === end) {
-
-                // var curr = currentAirport;
-                // var ret = [];
-                // while(curr.parent) {
-                //     ret.push(curr);
-                //     curr = curr.parent;
-                // }
-                // return ret.reverse();
                 return paths;
             }
 
@@ -200,12 +190,10 @@ const astar = {
                 let neighborAirport = airports[neighbor];
                 neighborAirport.cost = neighbors[neighbor];
                 if(neighborAirport.closed) {
-                    // Not a valid node to process, skip to next neighbor.
+                    
                     continue;
                 }
-                paths[pathCount].push(neighborAirport);
-                // The g score is the shortest distance from start to current node.
-                // We need to check if the path we have arrived at this neighbor is the shortest one we have seen yet.
+                paths[paths.length - 1].push(neighborAirport);
                 var gScore = currentAirport.g + neighborAirport.cost;
                 var beenVisited = neighborAirport.visited;
 
@@ -250,33 +238,123 @@ const astar = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__airports__ = __webpack_require__(0);
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
 
-
-
-
-
-const drawAirports = () => {
-
-  var canvas = document.getElementById('canvas');
-  canvas.width = 800;
-  canvas.height = 500;
-  var ctx = canvas.getContext('2d');
-
-
-  for (var airport in __WEBPACK_IMPORTED_MODULE_0__airports__["a" /* default */]) {
-    ctx.beginPath();
-    ctx.arc(__WEBPACK_IMPORTED_MODULE_0__airports__["a" /* default */][airport].pos.x, __WEBPACK_IMPORTED_MODULE_0__airports__["a" /* default */][airport].pos.y, 5, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fill();
-  }
+const drawLineSegment = (pos, idx) => {
+  ctx.beginPath();
+  ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
+  ctx.lineTo(pos[idx].x, pos[idx].y);
+  ctx.stroke();
+  ctx.closePath();
 };
 
-/* harmony default export */ __webpack_exports__["a"] = drawAirports;
+function animate(total, ptsArr, idx, subidx, cb) {
+    const reAnimate = () => {
+      animate(total, ptsArr, idx, subidx, cb);
+    };
+    if (total < ptsArr[idx][subidx].length - 1) {
+        requestAnimationFrame(reAnimate);
+    } else {
+      idx ++;
+      if (cb !== undefined) { cb(ptsArr, idx); }
+      return;
+    }
+    drawLineSegment(ptsArr[idx][subidx], total);
+    total++;
+}
+
+
+const drawPathGenerations = (pathGens, generation = 0) => {
+  if (generation === pathGens.length) { return; }
+  for (var path = 0; path < pathGens[generation].length - 1; path++) {
+    animate(1, pathGens, generation, path); // only one path calls drawPathGenerations to draw the next gen
+  }
+  let curr = pathGens[generation].length - 1;
+  animate(1, pathGens, generation, curr, drawPathGenerations);
+};
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = drawPathGenerations;
 
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__a_star__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__airports__ = __webpack_require__(0);
+
+
+
+
+
+
+let paths = [];
+let pathGenerations = __WEBPACK_IMPORTED_MODULE_1__a_star__["a" /* default */].search(__WEBPACK_IMPORTED_MODULE_2__airports__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2__airports__["a" /* default */].A, __WEBPACK_IMPORTED_MODULE_2__airports__["a" /* default */].D);
+
+for (var pathGen = 0; pathGen < pathGenerations.length - 1; pathGen++) {
+  paths.push([]);
+  for (var airport = 1; airport < pathGenerations[pathGen].length; airport++) {
+    let wayPoints = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__calc_waypoints__["a" /* default */])([pathGenerations[pathGen][0].pos,
+      pathGenerations[pathGen][airport].pos]);
+    paths[pathGen]
+      .push(wayPoints);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = paths;
+
+
+
+
+
+
+
+
+
+
+//
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+throw new Error("Module parse failed: /Users/allannist/Documents/App_Academy/job_search/FlightMapping/js/sand_box.js Unexpected token (23:358)\nYou may need an appropriate loader to handle this file type.\n| \n| \n| ['\"ATL\"','\"LAX\"','\"ORD\"','\"DFW\"','\"JFK\"','\"DEN\"','\"SFO\"','\"CLT\"','\"LAS\"','\"PHX\"','\"MIA\"','\"IAH\"','\"SEA\"','\"MCO\"','\"EWR\"','\"MSP\"','\"BOS\"','\"DTW\"','\"PHL\"','\"LGA\"','\"FLL\"','\"BWI\"','\"DCA\"','\"MDW\"','\"SLC\"','\"IAD\"','\"SAN\"','\"HNL\"','\"TPA\"','\"PDX\"','\"DAL\"','\"STL\"','\"HOU\"','\"AUS\"','\"BNA\"','\"OAK\"','\"MSY\"','\"MCI\"','\"RDU\"','\"SNA\"','\"SJC\"','\"SMF\"','\"SJU\"','\"RSW\"',\"SAT\"'\"CLE\"','\"PIT\"','\"IND\"','\"CMH\"','\"MKE\"','\"OGG\"','\"PBI\"','\"CVG\"','\"BDL\"','\"JAX\"','\"ANC\"','\"BUF\"','\"ABQ\"','\"ONT\"','\"OMA\"','\"BUR\"','\"MEM\"','\"OKC\"','\"PVD\"','\"RIC\"','\"CHS\"','\"RNO\"','\"SDF\"','\"TUS\"','\"GEG\"','\"ORF\"','\"LIH\"','\"BOI\"','\"KOA\"','\"GUM\"','\"ELP\"','\"TUL\"','\"BHM\"','\"GRR\"','\"ALB\"','\"LGB\"','\"SFB\"','\"ROC\"','\"DSM\"','\"DAY\"','\"MHT\"','\"SYR\"','\"SAV\"','\"LIT\"','\"GSP\"','\"PSP\"','\"MYR\"','\"PWM\"','\"TYS\"','\"GSO\"','\"MSN\"','\"PIE\"','\"PNS\"','\"ICT\"','\"CAK\"','\"HPN\"','\"STT\"','\"FAT\"','\"IWA\"','\"XNA\"','\"ITO\"','\"SRQ\"','\"LEX\"','\"ISP\"','\"COS\"','\"ACY\"','\"MDT\"','\"BTV\"','\"CID\"','\"CAE\"','\"HSV\"','\"MAF\"','\"BZN\"','\"JAN\"','\"FSD\"','\"FAI\"','\"GSN\"','\"SGF\"','\"EUG\"','\"BLI\"','\"LBB\"','\"FAR\"','\"ECP\"','\"PGD\"','\"BIL\"','\"FNT\"','\"JNU\"','\"CHA\"','\"AVL\"','\"MFE\"','\"TTN\"','\"ILM\"','\"VPS\"','\"MFR\"','\"MLI\"','\"BTR\"','\"EYW\"','\"FWA\"','\"MSO\"','\"PSC\"','\"AMA\"','\"CRP\"','\"TLH\"','\"GCN\"','\"ABE\"','\"PIA\"','\"GPT\"','\"SBA\"','\"SBN\"','\"JAC\"','\"DAB\"','\"ROA\"','\"SHV\"','\"GRB\"','\"RDM\"','\"MOB\"','\"CHO\"','\"BGR\"','\"AGS\"','\"RAP\"','\"BIS\"','\"HRL\"','\"ATW\"','\"LFT\"','\"GPI\"','\"BVU\"','\"ASE\"','\"CRW\"','\"MLB\"','\"FAY\"','\"AVP\"','\"TRI\"','\"GJT\"','\"GNV\"','\"TVC\"','\"EVV\"','\"BQN\"','\"PHF\"','\"DRO\"','\"BMI\"','\"GTF\"','\"MOT\"','\"LBE\"','\"LAN\"','\"MRY\"','\"GRK\"','\"STX\"','\"MGM\"','\"LNK\"','\"AEX\"','\"BET\"','\"EGE\"','\"ACK\"','\"ELM\"','\"OAJ\"','\"IDA\"','\"GFK\"','\"SBP\"','\"BRO\"','\"SWF\"','\"UNV\"','\"PBG\"','\"DLH\"','\"STS\"','\"CWA\"','\"KTN\"','\"AZO\"','\"IAG\"','\"BFL\"','\"MBS\"','\"RST\"','\"MLU\"','\"LRD\"','\"EWN\"','\"IFP\"','\"RFD\"','\"CPR\"','\"MTJ\"','\"ISN\"','\"HTS\"','\"HLN\"','\"PSE\"','\"ENA\"','\"LSE\"','\"TOL\"','\"HDN\"','\"SPI\"','\"MKK\"','\"CLL\"','\"CMI\"','\"ERI\"','\"ITH\"','\"ABI\"','\"FSM\"','\"LCK\"','\"ADQ\"','\"SIT\"','\"SCK\"','\"NYL\"','\"BGM\"','\"SCC\"','\"LYH\"','\"SAF\"','\"JQF\"','\"TYR\"','\"VQS\"','\"SGU\"','\"LCH\"','\"SUN\"','\"FLG\"','\"LWS\"','\"OTZ\"','\"YNG\"','\"MHK\"','\"PPG\"','\"HYA\"','\"PVU\"','\"COU\"','\"GRI\"','\"SJT\"','\"YKM\"','\"ACT\"','\"EAT\"','\"SBY\"','\"OME\"','\"ORH\"','\"ACV\"','\"PGV\"','\"HND\"','\"FLO\"','\"LAW\"','\"CSG\"','\"PUW\"','\"MVY\"','\"BRW\"','\"TNI\"','\"DHN\"','\"PSM\"','\"SPS\"','\"SMX\"','\"RVR\"','\"SAW\"','\"DIK\"','\"ALW\"','\"HOM\"','\"LNY\"','\"VLD\"','\"GTR\"','\"HXD\"','\"DBQ\"','\"AKN\"','\"ROW\"','\"TXK\"']\n| ");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const calcWaypoints = (verts) => {
+    var waypoints = [];
+    for (var i = 1; i < verts.length; i++) {
+        var pt0 = verts[i - 1];
+        var pt1 = verts[i];
+        var dx = pt1.x - pt0.x;
+        var dy = pt1.y - pt0.y;
+        for (var j = 0; j < 100; j++) {
+            var x = pt0.x + dx * j / 100;
+            var y = pt0.y + dy * j / 100;
+            waypoints.push({
+                x: x,
+                y: y
+            });
+        }
+    }
+    return (waypoints);
+};
+
+/* harmony default export */ __webpack_exports__["a"] = calcWaypoints;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -317,11 +395,6 @@ function PriorityQueue(compare, queue) {
     return queue[0];
   };
 
-  // this.deleteAt = (idx) => {
-  //   remove(idx);
-  // };
-
-
   this.push = function push(/* element, ... */) {
     var i = queue.length, e = i + arguments.length, j, p;
     queue.push.apply(queue, arguments);
@@ -353,9 +426,7 @@ function left(i)   { return 2 * i + 1; }
 function right(i)  { return 2 * i + 2; }
 function parent(i) { return Math.floor((i + 1) / 2) - 1; }
 
-
 function min_first(a, b) { return a.f - b.f; }
-
 
 /* harmony default export */ __webpack_exports__["a"] = PriorityQueue;
 
@@ -371,24 +442,26 @@ function min_first(a, b) { return a.f - b.f; }
 
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_a_star__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_sand_box__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_sand_box__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_sand_box___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__js_sand_box__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_draw_paths__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_generate_paths__ = __webpack_require__(3);
 
 
 
 
-window.astar = __WEBPACK_IMPORTED_MODULE_0__js_a_star__["a" /* default */];
-window.airports = __WEBPACK_IMPORTED_MODULE_1__js_airports__["a" /* default */];
 
 
 
-__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_sand_box__["a" /* default */])();
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_sand_box__["default"])();
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__js_draw_paths__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_4__js_generate_paths__["a" /* default */]);
 
 
 /***/ })
