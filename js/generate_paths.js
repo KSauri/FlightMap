@@ -1,11 +1,13 @@
 import calcWaypoints from './calc_waypoints';
 import astar from './a_star';
-import airports from './airports';
+import all_airports from './us_airports';
 
 
+let start = all_airports["30"];
+let end = all_airports["4"];
 
 let paths = [];
-let pathGenerations = astar.search(airports, airports.A, airports.D);
+let pathGenerations = astar.search(all_airports, start, end);
 
 for (var pathGen = 0; pathGen < pathGenerations.length - 1; pathGen++) {
   paths.push([]);

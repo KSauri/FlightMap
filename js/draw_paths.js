@@ -3,8 +3,10 @@ var ctx = canvas.getContext('2d');
 
 const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
+  debugger
   ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
   ctx.lineTo(pos[idx].x, pos[idx].y);
+  ctx.strokeStyle = "red";
   ctx.stroke();
   ctx.closePath();
 };

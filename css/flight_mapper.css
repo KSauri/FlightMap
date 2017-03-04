@@ -1,0 +1,12 @@
+.map {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -3;
+  height: 700px;
+  width: 951px;
+}
+
+.white-space {
+  height: 80px;
+}

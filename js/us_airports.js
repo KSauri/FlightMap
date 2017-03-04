@@ -2,6 +2,18 @@ let us_airports = {"city":{"1":"Fort Smith","2":"Grand Forks","3":"Trenton","4":
 
 let all_airports = {};
 
+const parseLat = (lat) => {
+  let rightMinusLeft = -71.7979 + 128.3877;
+  let answer = Math.abs(800 * (lat + 128.3877)/rightMinusLeft);
+  return answer;
+};
+
+const parseLng = (lng) => {
+  let topMinusBottom = 51.179910 - 21.6940;
+  let answer = Math.abs(600 * (51.179910 - lng)/topMinusBottom);
+  return answer;
+};
+
 Object.keys(us_airports.city).forEach((airportId) => {
   all_airports[airportId] = {};
   all_airports[airportId].id = airportId;
@@ -10,11 +22,17 @@ Object.keys(us_airports.city).forEach((airportId) => {
 Object.keys(all_airports).forEach((airportId) => {
     all_airports[airportId].pos = {};
     let lat = parseFloat(us_airports.lat[airportId]);
-    all_airports[airportId].pos.x = lat; });
+    let canvasLat = parseLng(lat);
+    all_airports[airportId].pos.x = canvasLat; });
+
+Object.keys(us_airports.threeLetterName).forEach((airportId) => {
+  all_airports[airportId].code = us_airports.threeLetterName[airportId];
+});
 
 Object.keys(all_airports).forEach((airportId) => {
     let lng = parseFloat(us_airports.lng[airportId]);
-    all_airports[airportId].pos.y = lng; });
+    let canvasLng = parseLat(lng);
+    all_airports[airportId].pos.y = canvasLng; });
 
 Object.keys(all_airports).forEach((airportId) => {
     all_airports[airportId].neighbors = {}; });
@@ -43,7 +61,7 @@ const makeNeighbors = (airportOne, airportTwo) => {
   airportTwo.neighbors[airportOne.id] = dist;
 };
 
-Object.prototype.size = function(obj) {
+const size = function(obj) {
     var size = 0, key;
     for (key in obj) {
         if (obj.hasOwnProperty(key)) size++;
@@ -53,10 +71,10 @@ Object.prototype.size = function(obj) {
 
 const assignNeighbors = (airports) => {
   Object.keys(airports).forEach((airportOneId) => {
-    if (airports[airportOneId].neighbors.size() < 2) {
+    if (size(airports[airportOneId].neighbors) < 2) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 2.5) {
+        if (airportTwoId !== airportOneId && dist < 30) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -64,7 +82,21 @@ const assignNeighbors = (airports) => {
   });
 };
 
-const airportData = assignNeighbors(all_airports);
+const assignIsolatedNeighbors = (airports) => {
+  Object.keys(airports).forEach((airportOneId) => {
+    if (size(airports[airportOneId].neighbors) < 1) {
+      Object.keys(airports).forEach((airportTwoId) => {
+        let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
+        if (airportTwoId !== airportOneId && dist < 40) {
+          makeNeighbors(airports[airportOneId], airports[airportTwoId]);
+        }
+      });
+    }
+  });
+};
 
+assignNeighbors(all_airports);
+assignIsolatedNeighbors(all_airports);
+debugger
 
 export default all_airports;

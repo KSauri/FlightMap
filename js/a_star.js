@@ -18,7 +18,6 @@ const astar = {
     search: function(airports, start, end, diagonal, heuristic) {
         astar.init(airports);
         heuristic = heuristic || astar.manhattan;
-        diagonal = !!diagonal;
         var openHeap = astar.heap();
         start.f = 100000000000;
         openHeap.push(start);
@@ -41,7 +40,6 @@ const astar = {
                 let neighborAirport = airports[neighbor];
                 neighborAirport.cost = neighbors[neighbor];
                 if(neighborAirport.closed) {
-                    
                     continue;
                 }
                 paths[paths.length - 1].push(neighborAirport);
@@ -74,7 +72,6 @@ const astar = {
     },
     manhattan: function(pos0, pos1) {
         // See list of heuristics: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-
         var d1 = Math.abs (pos1.x - pos0.x);
         var d2 = Math.abs (pos1.y - pos0.y);
         return d1 + d2;
