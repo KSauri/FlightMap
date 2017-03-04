@@ -166,9 +166,8 @@ var ctx = canvas.getContext('2d');
 
 const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
-  debugger
-  ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
-  ctx.lineTo(pos[idx].x, pos[idx].y);
+  ctx.moveTo(pos[idx - 1].y, pos[idx - 1].x);
+  ctx.lineTo(pos[idx].y, pos[idx].x);
   ctx.strokeStyle = "red";
   ctx.stroke();
   ctx.closePath();
@@ -217,8 +216,8 @@ const drawPathGenerations = (pathGens, generation = 0) => {
 
 
 
-let start = __WEBPACK_IMPORTED_MODULE_2__us_airports__["a" /* default */]["30"];
-let end = __WEBPACK_IMPORTED_MODULE_2__us_airports__["a" /* default */]["4"];
+let start = __WEBPACK_IMPORTED_MODULE_2__us_airports__["a" /* default */]["4"];
+let end = __WEBPACK_IMPORTED_MODULE_2__us_airports__["a" /* default */]["147"];
 
 let paths = [];
 let pathGenerations = __WEBPACK_IMPORTED_MODULE_1__a_star__["a" /* default */].search(__WEBPACK_IMPORTED_MODULE_2__us_airports__["a" /* default */], start, end);
@@ -360,7 +359,7 @@ function PriorityQueue(compare, queue) {
   };
 
   this.rescoreElement = (elToChange) => {
-    oldElIndex = queue.findIndex((el) => {
+    let oldElIndex = queue.findIndex((el) => {
       return el.id === elToChange.id;
     });
     console.log(oldElIndex);
@@ -497,7 +496,7 @@ const assignNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 2) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 30) {
+        if (airportTwoId !== airportOneId && dist < 40) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -510,7 +509,7 @@ const assignIsolatedNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 1) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 40) {
+        if (airportTwoId !== airportOneId && dist < 50) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -520,7 +519,7 @@ const assignIsolatedNeighbors = (airports) => {
 
 assignNeighbors(all_airports);
 assignIsolatedNeighbors(all_airports);
-debugger
+
 
 /* harmony default export */ __webpack_exports__["a"] = all_airports;
 

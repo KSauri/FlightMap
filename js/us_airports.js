@@ -74,7 +74,7 @@ const assignNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 2) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 30) {
+        if (airportTwoId !== airportOneId && dist < 40) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -87,7 +87,7 @@ const assignIsolatedNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 1) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 40) {
+        if (airportTwoId !== airportOneId && dist < 50) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -97,6 +97,6 @@ const assignIsolatedNeighbors = (airports) => {
 
 assignNeighbors(all_airports);
 assignIsolatedNeighbors(all_airports);
-debugger
+
 
 export default all_airports;

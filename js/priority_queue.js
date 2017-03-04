@@ -48,7 +48,7 @@ function PriorityQueue(compare, queue) {
   };
 
   this.rescoreElement = (elToChange) => {
-    oldElIndex = queue.findIndex((el) => {
+    let oldElIndex = queue.findIndex((el) => {
       return el.id === elToChange.id;
     });
     console.log(oldElIndex);
