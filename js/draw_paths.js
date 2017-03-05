@@ -27,7 +27,11 @@ function animate(total, ptsArr, idx, subidx, cb) {
 
 
 const drawPathGenerations = (pathGens, generation = 0) => {
-  if (generation === pathGens.length) { return; }
+  // if (pathGens[generation].length === 0) {debugger;}
+  while (pathGens[generation].length === 0 || generation === pathGens.length) {
+    if (generation === pathGens.length) { return; }
+    generation ++;
+  }
   for (var path = 0; path < pathGens[generation].length - 1; path++) {
     animate(1, pathGens, generation, path); // only one path calls drawPathGenerations to draw the next gen
   }

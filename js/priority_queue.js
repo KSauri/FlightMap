@@ -51,7 +51,6 @@ function PriorityQueue(compare, queue) {
     let oldElIndex = queue.findIndex((el) => {
       return el.id === elToChange.id;
     });
-    console.log(oldElIndex);
     remove(oldElIndex);
     this.push(elToChange);
   };

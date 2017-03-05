@@ -4,7 +4,7 @@ import all_airports from './us_airports';
 
 
 let start = all_airports["4"];
-let end = all_airports["147"];
+let end = all_airports["161"];
 
 let paths = [];
 let pathGenerations = astar.search(all_airports, start, end);

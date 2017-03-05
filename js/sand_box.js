@@ -8,6 +8,7 @@ const drawAirports = () => {
   canvas.height = 700;
   var ctx = canvas.getContext('2d');
 
+
   for (var airport in all_airports) {
     if (airport === "size") { continue; }
     ctx.beginPath();
