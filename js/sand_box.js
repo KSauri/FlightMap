@@ -1,22 +1,22 @@
 import all_airports from './us_airports';
 
 
-const drawAirports = () => {
+const drawAirports = (ctx) => {
+  let hubs = ["148","17","136","90","83","48"];
 
-  var canvas = document.getElementById('canvas');
-  canvas.width = 1000;
-  canvas.height = 700;
-  var ctx = canvas.getContext('2d');
-
-
-  for (var airport in all_airports) {
+  for (let airport in all_airports) {
     if (airport === "size") { continue; }
     ctx.beginPath();
     let y = all_airports[airport].pos.x;
     let x = all_airports[airport].pos.y;
-    ctx.arc(x,y, 2.5, 0, Math.PI * 2, true);
+    if (hubs.includes(airport)) {
+      ctx.arc(x,y, 6, 0, Math.PI * 2, true);
+      ctx.fillStyle = "#e5df34";
+    } else {
+      ctx.arc(x,y, 2.5, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#2C5581';
+    }
     ctx.closePath();
-    ctx.fillStyle = '#2C5581';
     ctx.fill();
   }
 };

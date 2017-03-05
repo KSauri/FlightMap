@@ -55,11 +55,9 @@ ctx.fillStyle = this.color;
 ctx.fill();
 
 
-// var canvas = document.getElementById("canvas");
-// var ctx = canvas.getContext("2d");
 ctx.lineCap = "round";
 
-// variable to hold how many frames have elapsed in the animation
+
 var t = 1;
 
 // define the path to plot

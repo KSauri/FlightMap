@@ -3,8 +3,8 @@ import astar from './a_star';
 import all_airports from './us_airports';
 
 
-let start = all_airports["4"];
-let end = all_airports["161"];
+let start = all_airports["14"];
+let end = all_airports["83"];
 
 let paths = [];
 let pathGenerations = astar.search(all_airports, start, end);

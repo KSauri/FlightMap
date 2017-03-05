@@ -74,7 +74,7 @@ const assignNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 2) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 40) {
+        if (airportTwoId !== airportOneId && dist < 32) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
@@ -95,8 +95,20 @@ const assignIsolatedNeighbors = (airports) => {
   });
 };
 
+const assignHubs = (airports) => {
+  let hubIds = ["148", "17", "136", "90", "83", "48"]; // airport id's of JFK, ORD, LAX, ATL, DFW and SEA
+  for (var hubOne = 0; hubOne < hubIds.length; hubOne++) {
+    for (var hubTwo = hubOne + 1; hubTwo < hubIds.length; hubTwo++) {
+      makeNeighbors(airports[hubIds[hubOne]], airports[hubIds[hubTwo]]);
+    }
+  }
+};
+
+
 assignNeighbors(all_airports);
 assignIsolatedNeighbors(all_airports);
+assignHubs(all_airports);
+
 
 
 export default all_airports;
