@@ -14,7 +14,7 @@ const calcWaypoints = (verts) => {
             });
         }
     }
-    return (waypoints);
+    return (waypoints); //TODO 
 };
 
 export default calcWaypoints;
