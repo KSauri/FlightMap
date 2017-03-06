@@ -3,31 +3,30 @@ var ctx = canvas.getContext('2d');
 
 const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
-  ctx.moveTo(pos[idx - 1].y, pos[idx - 1].x);
-  ctx.lineTo(pos[idx].y, pos[idx].x);
+  ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
+  ctx.lineTo(pos[idx].x, pos[idx].y);
   ctx.strokeStyle = "red";
   ctx.stroke();
   ctx.closePath();
 };
 
-function animate(total, ptsArr, idx, subidx, cb) {
+function animate(total, pointsArray, idx, subidx, cb) {
     const reAnimate = () => {
-      animate(total, ptsArr, idx, subidx, cb);
+      animate(total, pointsArray, idx, subidx, cb);
     };
-    if (total < ptsArr[idx][subidx].length - 1) {
+    if (total < pointsArray[idx][subidx].length - 1) {
         requestAnimationFrame(reAnimate);
     } else {
       idx ++;
-      if (cb !== undefined) { cb(ptsArr, idx); }
+      if (cb !== undefined) { cb(pointsArray, idx); }
       return;
     }
-    drawLineSegment(ptsArr[idx][subidx], total);
+    drawLineSegment(pointsArray[idx][subidx], total);
     total++;
 }
 
 
 const drawPathGenerations = (pathGens, generation = 0) => {
-  // if (pathGens[generation].length === 0) {debugger;}
   while (pathGens[generation].length === 0 || generation === pathGens.length) {
     if (generation === pathGens.length) { return; }
     generation ++;

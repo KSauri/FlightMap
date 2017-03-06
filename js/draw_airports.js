@@ -7,8 +7,8 @@ const drawAirports = (ctx) => {
   for (let airport in all_airports) {
     if (airport === "size") { continue; }
     ctx.beginPath();
-    let y = all_airports[airport].pos.x;
-    let x = all_airports[airport].pos.y;
+    let x = all_airports[airport].pos.x;
+    let y = all_airports[airport].pos.y;
     if (hubs.includes(airport)) {
       ctx.arc(x,y, 6, 0, Math.PI * 2, true);
       ctx.fillStyle = "#e5df34";

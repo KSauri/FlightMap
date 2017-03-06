@@ -1,5 +1,6 @@
 .map {
   position: absolute;
+  margin-top: 80px;
   top: 0px;
   left: 0px;
   z-index: -3;
@@ -11,4 +12,9 @@
   height: 80px;
 }
 
-/*font-family: 'Crimson Text', serif;*/
+
+h1 {
+  font-family: 'Crimson Text', serif;
+  font-size: 30px;
+  /*margin: 0 auto;*/
+}
