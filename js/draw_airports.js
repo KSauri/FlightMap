@@ -14,7 +14,7 @@ const drawAirports = (ctx) => {
       ctx.fillStyle = "#e5df34";
     } else {
       ctx.arc(x,y, 2.5, 0, Math.PI * 2, true);
-      ctx.fillStyle = '#2C5581';
+      ctx.fillStyle = '#e5df34';
     }
     ctx.closePath();
     ctx.fill();

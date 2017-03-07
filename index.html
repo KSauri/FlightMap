@@ -6,10 +6,20 @@
   </head>
 
   <body>
-    <h1>Flight Mapper</h1>
-    <div class="white-space"></div> 
-    <canvas id="canvas"></canvas>
-    <img class="map" src="map/map.png" />
-    <script type="application/javascript" src="bundle.js"></script>
+    <div class="container">
+      <h1>Flight Mapper</h1>
+      <canvas id="canvas"></canvas>
+      <div style="display:none;">
+        <img id="source" src="map/map.png" width="951" height="700">
+      </div>
+      <script type="application/javascript" src="bundle.js"></script>
+      <button id="srcAndDest">Choose Start and End!</button>
+      <h3>Welcome!</h3>
+      <p>The flight mapper uses the A* path finding algorithm.</p>
+    </div>
   </body>
 </html>
+
+
+
+<!-- <img class="map" src="map/map.png" /> -->

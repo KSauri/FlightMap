@@ -31,8 +31,16 @@ const returnAirports = (ap) => {
   return ap;
 };
 
-const myClosure = (whatever) => {
-  return whatever;
+const myClosure = (func) => {
+  return func;
+};
+
+const drawChosenAirport = (ctx, x, y) => {
+  ctx.beginPath();
+  ctx.arc(x-8,y-8, 6, 0, Math.PI * 2, true);
+  ctx.fillStyle = "#c22f2f";
+  ctx.closePath();
+  ctx.fill();
 };
 
 const chooseSrcDest = (canvas, ctx, all_airports) => {
@@ -41,6 +49,7 @@ const chooseSrcDest = (canvas, ctx, all_airports) => {
   let canvasTop = canvas.offsetTop;
   let wtf = all_airports;
   ctx.clearRect(0,0,1000,700);
+  ctx.drawImage(document.getElementById('source'), -16, -60);
   drawAirports(ctx);
 
   let srcAndDest = [];
@@ -48,15 +57,19 @@ const chooseSrcDest = (canvas, ctx, all_airports) => {
   canvas.addEventListener("click", (event) => {
     let x = event.pageX - canvasLeft;
     let y = event.pageY - canvasTop;
+    let context = myClosure(ctx);
     let airports = returnAirports(all_airports);
     let fAFC = myClosure(findAirportFromCoords);
     let airport = airports[fAFC(airports, x, y)];
     let sAD = myClosure(srcAndDest);
     let dPG = myClosure(drawPathGenerations);
     let pG = myClosure(pathGenerator);
+    drawChosenAirport(ctx, x, y);
     sAD.push(airport);
     if (sAD.length > 1) {
       dPG(pG(airports, sAD[0], sAD[1]));
+      sAD.pop();
+      sAD.pop();
     }
     });
 

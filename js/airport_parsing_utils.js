@@ -119,5 +119,11 @@ export const assignHubs = (airports) => {
     for (var hubTwo = hubOne + 1; hubTwo < hubIds.length; hubTwo++) {
       makeNeighbors(airports[hubIds[hubOne]], airports[hubIds[hubTwo]]);
     }
+    Object.keys(airports).forEach((nonHubAirportId) => {
+      let dist = pythagoreanDis(airports[hubIds[hubOne]].pos, airports[nonHubAirportId].pos);
+      if (hubIds[hubOne] !== nonHubAirportId && dist < 130) {
+        makeNeighbors(airports[hubIds[hubOne]], airports[nonHubAirportId]);
+      }
+    });
   }
 };

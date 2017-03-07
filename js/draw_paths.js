@@ -5,7 +5,7 @@ const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
   ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
   ctx.lineTo(pos[idx].x, pos[idx].y);
-  ctx.strokeStyle = "red";
+  ctx.strokeStyle = "#e5df34";
   ctx.stroke();
   ctx.closePath();
 };
@@ -27,8 +27,9 @@ function animate(total, pointsArray, idx, subidx, cb) {
 
 
 const drawPathGenerations = (pathGens, generation = 0) => {
+  if (pathGens.length === generation) {return;}
   while (pathGens[generation].length === 0 || generation === pathGens.length) {
-    if (generation === pathGens.length) { return; }
+    if (generation === pathGens.length - 1) { return; }
     generation ++;
   }
   for (var path = 0; path < pathGens[generation].length - 1; path++) {

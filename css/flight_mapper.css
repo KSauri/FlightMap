@@ -2,7 +2,7 @@
   position: absolute;
   margin-top: 80px;
   top: 0px;
-  left: 0px;
+  left: 100px;
   z-index: -3;
   height: 700px;
   width: 951px;
@@ -12,6 +12,12 @@
   height: 80px;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
 
 h1 {
   font-family: 'Crimson Text', serif;

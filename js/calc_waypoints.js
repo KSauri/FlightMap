@@ -5,16 +5,16 @@ const calcWaypoints = (verts) => {
         let pt1 = verts[i];
         let dx = pt1.x - pt0.x;
         let dy = pt1.y - pt0.y;
-        for (let j = 0; j < 100; j++) {
-            let x = Math.floor(pt0.x + dx * j / 100);
-            let y = Math.floor(pt0.y + dy * j / 100);
+        for (let j = 0; j < 50; j++) {
+            let x = Math.floor(pt0.x + dx * j / 50);
+            let y = Math.floor(pt0.y + dy * j / 50);
             waypoints.push({
                 x: x,
                 y: y
             });
         }
     }
-    return (waypoints); //TODO 
+    return (waypoints);
 };
 
 export default calcWaypoints;

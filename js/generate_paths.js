@@ -3,8 +3,6 @@ import astar from './a_star';
 import all_airports from './us_airports';
 
 
-// let start = all_airports["14"];
-// let end = all_airports["83"];
 
 const pathGenerator = (airports, start, end) => {
   let pathGenerations = astar.search(airports, start, end);

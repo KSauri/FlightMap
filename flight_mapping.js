@@ -8,12 +8,17 @@ import chooseSrcDest from './js/choose_src_dest';
 
 window.airports = all_airports;
 
-let canvas = document.getElementById('canvas');
-canvas.width = 1000;
-canvas.height = 700;
-let ctx = canvas.getContext('2d');
+document.addEventListener("DOMContentLoaded", function(){
+    let canvas = document.getElementById('canvas');
+    canvas.width = 1000;
+    canvas.height = 580;
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(document.getElementById('source'), -16, -60);
 
-drawAirports(ctx);
+    drawAirports(ctx);
 
-chooseSrcDest(canvas, ctx, all_airports);
-// drawPathGenerations(paths);
+    document.getElementById("srcAndDest").addEventListener("click", () => {
+      chooseSrcDest(canvas, ctx, all_airports);
+    });
+
+});
