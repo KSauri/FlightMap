@@ -77,10 +77,10 @@ let us_airports = {"city":{"1":"Fort Smith","2":"Grand Forks","3":"Trenton","4":
 // data exported from Pandas ^^
 
 let all_airports = {};
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["a" /* parseAirports */](us_airports, all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["b" /* assignNeighbors */](all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["c" /* assignIsolatedNeighbors */](all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignHubs */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["b" /* parseAirports */](us_airports, all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["c" /* assignNeighbors */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignIsolatedNeighbors */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["e" /* assignHubs */](all_airports);
 
 
 
@@ -94,6 +94,21 @@ __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignHubs */](all_a
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(8);
 
+
+
+const generateFinalPath = (endingAirport) => {
+  let finalPath = [];
+  let finalPathAirport = endingAirport;
+  while (finalPathAirport.parent) {
+    let pathGeneration = [];
+    pathGeneration.final = true;
+    pathGeneration.unshift(finalPathAirport);
+    pathGeneration.unshift(finalPathAirport.parent);
+    finalPath.unshift(pathGeneration);
+    finalPathAirport = finalPathAirport.parent;
+  }
+  return finalPath;
+};
 
 const astar = {
     init: function(airports) {
@@ -124,7 +139,8 @@ const astar = {
             paths.push([currentAirport]);
 
             if(currentAirport === end) {
-                return paths;
+              let finalPath = generateFinalPath(currentAirport);
+              return paths.concat(finalPath);
             }
 
             currentAirport.closed = true;
@@ -149,12 +165,10 @@ const astar = {
                     neighborAirport.f = neighborAirport.g + neighborAirport.h;
 
                     if (!beenVisited) {
-                        
-                        openHeap.push(neighborAirport);
+                      openHeap.push(neighborAirport);
                     }
                     else {
-
-                        openHeap.rescoreElement(neighborAirport);
+                      openHeap.rescoreElement(neighborAirport);
                     }
                 }
             }
@@ -216,24 +230,30 @@ const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
   ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
   ctx.lineTo(pos[idx].x, pos[idx].y);
-  ctx.strokeStyle = "#e5df34";
+  if (pos.final) {
+    ctx.strokeStyle = "orange";
+    ctx.lineWidth = 2;
+  } else {
+    ctx.strokeStyle = "#e5df34";
+    ctx.lineWidth = 1;
+  }
   ctx.stroke();
   ctx.closePath();
 };
 
-function animate(total, pointsArray, idx, subidx, cb) {
+function animate(lineSegmentCount, pathGenerations, generation, individualPath, wrapper) {
     const reAnimate = () => {
-      animate(total, pointsArray, idx, subidx, cb);
+      animate(lineSegmentCount, pathGenerations, generation, individualPath, wrapper);
     };
-    if (total < pointsArray[idx][subidx].length - 1) {
+    if (lineSegmentCount < pathGenerations[generation][individualPath].length - 1) {
         requestAnimationFrame(reAnimate);
     } else {
-      idx ++;
-      if (cb !== undefined) { cb(pointsArray, idx); }
+      generation ++;
+      if (wrapper) { wrapper(pathGenerations, generation); }
       return;
     }
-    drawLineSegment(pointsArray[idx][subidx], total);
-    total++;
+    drawLineSegment(pathGenerations[generation][individualPath], lineSegmentCount);
+    lineSegmentCount++;
 }
 
 
@@ -273,13 +293,15 @@ const pathGenerator = (airports, start, end) => {
   let pathGenerations = __WEBPACK_IMPORTED_MODULE_1__a_star__["a" /* default */].search(airports, start, end);
   let paths = [];
 
-  for (let pathGen = 0; pathGen < pathGenerations.length - 1; pathGen++) {
+  for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
     paths.push([]);
     for (let airport = 1; airport < pathGenerations[pathGen].length; airport++) {
       let wayPoints = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__calc_waypoints__["a" /* default */])([pathGenerations[pathGen][0].pos,
         pathGenerations[pathGen][airport].pos]);
-        paths[pathGen]
-        .push(wayPoints);
+      if (pathGenerations[pathGen].final) {
+        wayPoints.final = true;
+      }
+      paths[pathGen].push(wayPoints);
       }
     }
   return paths;
@@ -309,10 +331,27 @@ const pathGenerator = (airports, start, end) => {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_paths__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__ = __webpack_require__(6);
 
 
 
 
+
+
+const minDistanceAirport = (airports, commonAirports, x, y) => {
+  if (commonAirports.length === 0) { return null; }
+  let pos = {}; pos.x = x-8; pos.y = y-8;
+  let closest = commonAirports[0];
+  let minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[closest].pos);
+  for (var i = 1; i < commonAirports.length; i++) {
+    let currDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[commonAirports[i]].pos);
+    if (currDist < minDist) {
+      closest = commonAirports[i];
+      minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[i].pos);
+    }
+  }
+  return closest;
+};
 
 const findAirportFromCoords = (airports, x, y) => {
   let xAirports = [];
@@ -329,18 +368,17 @@ const findAirportFromCoords = (airports, x, y) => {
   }
 
   let cA = commonAirports(xAirports, yAirports);
-  return cA;
+  let airport = minDistanceAirport(airports, cA, x, y);
+
+  return airport;
 };
 
 const commonAirports = (airportArrayOne, airportArrayTwo) => {
   return airportArrayOne.filter(function(n) {
     return airportArrayTwo.indexOf(n) !== -1;
-  })[0].toString();
+  });
 };
 
-const returnAirports = (ap) => {
-  return ap;
-};
 
 const myClosure = (func) => {
   return func;
@@ -355,7 +393,6 @@ const drawChosenAirport = (ctx, x, y) => {
 };
 
 const chooseSrcDest = (canvas, ctx, all_airports) => {
-
   let canvasLeft = canvas.offsetLeft;
   let canvasTop = canvas.offsetTop;
   let wtf = all_airports;
@@ -365,23 +402,21 @@ const chooseSrcDest = (canvas, ctx, all_airports) => {
 
   let srcAndDest = [];
 
-  canvas.addEventListener("click", (event) => {
+  let drawPath = canvas.addEventListener("click", (event) => {
+    let startAndFinish = myClosure(srcAndDest);
     let x = event.pageX - canvasLeft;
     let y = event.pageY - canvasTop;
     let context = myClosure(ctx);
-    let airports = returnAirports(all_airports);
-    let fAFC = myClosure(findAirportFromCoords);
-    let airport = airports[fAFC(airports, x, y)];
-    let sAD = myClosure(srcAndDest);
-    let dPG = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
-    let pG = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_paths__["a" /* default */]);
-    drawChosenAirport(ctx, x, y);
-    sAD.push(airport);
-    if (sAD.length > 1) {
-      dPG(pG(airports, sAD[0], sAD[1]));
-      sAD.pop();
-      sAD.pop();
-    }
+    let airports = myClosure(all_airports);
+    let findAirports = myClosure(findAirportFromCoords);
+    let airport = airports[findAirports(airports, x, y)];
+    if (airport) { startAndFinish.push(airport);}
+    let drawPaths = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
+    let pathGen = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_paths__["a" /* default */]);
+    if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
+    if (startAndFinish.length === 2) {
+      drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]));
+      }
     });
 
 };
@@ -463,7 +498,7 @@ const parseAirports = (airports, result) => {
   addLat(airports, result);
   addNeighbors(result);
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseAirports;
+/* harmony export (immutable) */ __webpack_exports__["b"] = parseAirports;
 
 
 
@@ -472,7 +507,7 @@ const pythagoreanDis = (pos0, pos1) => {
   var d2 = Math.abs (pos1.y - pos0.y);
   return Math.sqrt(Math.pow(d1,2) + Math.pow(d2,2));
 };
-/* unused harmony export pythagoreanDis */
+/* harmony export (immutable) */ __webpack_exports__["a"] = pythagoreanDis;
 
 
 const shuffle = (array) => {
@@ -520,7 +555,7 @@ const assignNeighbors = (airports) => {
     }
   });
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = assignNeighbors;
+/* harmony export (immutable) */ __webpack_exports__["c"] = assignNeighbors;
 
 
 const assignIsolatedNeighbors = (airports) => {
@@ -535,7 +570,7 @@ const assignIsolatedNeighbors = (airports) => {
     }
   });
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = assignIsolatedNeighbors;
+/* harmony export (immutable) */ __webpack_exports__["d"] = assignIsolatedNeighbors;
 
 
 const assignHubs = (airports) => {
@@ -552,7 +587,7 @@ const assignHubs = (airports) => {
     });
   }
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = assignHubs;
+/* harmony export (immutable) */ __webpack_exports__["e"] = assignHubs;
 
 
 
@@ -563,6 +598,9 @@ const assignHubs = (airports) => {
 "use strict";
 const calcWaypoints = (verts) => {
     let waypoints = [];
+    if (verts[1].chosen === true) {
+      debugger
+      waypoints.chosen = true; }
     for (let i = 1; i < verts.length; i++) {
         let pt0 = verts[i - 1];
         let pt1 = verts[i];

@@ -1,5 +1,20 @@
 import PriorityQueue from './priority_queue';
 
+
+const generateFinalPath = (endingAirport) => {
+  let finalPath = [];
+  let finalPathAirport = endingAirport;
+  while (finalPathAirport.parent) {
+    let pathGeneration = [];
+    pathGeneration.final = true;
+    pathGeneration.unshift(finalPathAirport);
+    pathGeneration.unshift(finalPathAirport.parent);
+    finalPath.unshift(pathGeneration);
+    finalPathAirport = finalPathAirport.parent;
+  }
+  return finalPath;
+};
+
 const astar = {
     init: function(airports) {
         for (var airport in airports) {
@@ -29,7 +44,8 @@ const astar = {
             paths.push([currentAirport]);
 
             if(currentAirport === end) {
-                return paths;
+              let finalPath = generateFinalPath(currentAirport);
+              return paths.concat(finalPath);
             }
 
             currentAirport.closed = true;
@@ -54,12 +70,10 @@ const astar = {
                     neighborAirport.f = neighborAirport.g + neighborAirport.h;
 
                     if (!beenVisited) {
-                        
-                        openHeap.push(neighborAirport);
+                      openHeap.push(neighborAirport);
                     }
                     else {
-
-                        openHeap.rescoreElement(neighborAirport);
+                      openHeap.rescoreElement(neighborAirport);
                     }
                 }
             }

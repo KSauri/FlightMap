@@ -5,24 +5,30 @@ const drawLineSegment = (pos, idx) => {
   ctx.beginPath();
   ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
   ctx.lineTo(pos[idx].x, pos[idx].y);
-  ctx.strokeStyle = "#e5df34";
+  if (pos.final) {
+    ctx.strokeStyle = "orange";
+    ctx.lineWidth = 2;
+  } else {
+    ctx.strokeStyle = "#e5df34";
+    ctx.lineWidth = 1;
+  }
   ctx.stroke();
   ctx.closePath();
 };
 
-function animate(total, pointsArray, idx, subidx, cb) {
+function animate(lineSegmentCount, pathGenerations, generation, individualPath, wrapper) {
     const reAnimate = () => {
-      animate(total, pointsArray, idx, subidx, cb);
+      animate(lineSegmentCount, pathGenerations, generation, individualPath, wrapper);
     };
-    if (total < pointsArray[idx][subidx].length - 1) {
+    if (lineSegmentCount < pathGenerations[generation][individualPath].length - 1) {
         requestAnimationFrame(reAnimate);
     } else {
-      idx ++;
-      if (cb !== undefined) { cb(pointsArray, idx); }
+      generation ++;
+      if (wrapper) { wrapper(pathGenerations, generation); }
       return;
     }
-    drawLineSegment(pointsArray[idx][subidx], total);
-    total++;
+    drawLineSegment(pathGenerations[generation][individualPath], lineSegmentCount);
+    lineSegmentCount++;
 }
 
 

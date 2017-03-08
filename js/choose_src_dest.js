@@ -2,6 +2,22 @@ import drawAirports from './draw_airports';
 import all_airports from './us_airports';
 import pathGenerator from './generate_paths';
 import drawPathGenerations from './draw_paths';
+import { pythagoreanDis } from './airport_parsing_utils';
+
+const minDistanceAirport = (airports, commonAirports, x, y) => {
+  if (commonAirports.length === 0) { return null; }
+  let pos = {}; pos.x = x-8; pos.y = y-8;
+  let closest = commonAirports[0];
+  let minDist = pythagoreanDis(pos, airports[closest].pos);
+  for (var i = 1; i < commonAirports.length; i++) {
+    let currDist = pythagoreanDis(pos, airports[commonAirports[i]].pos);
+    if (currDist < minDist) {
+      closest = commonAirports[i];
+      minDist = pythagoreanDis(pos, airports[i].pos);
+    }
+  }
+  return closest;
+};
 
 const findAirportFromCoords = (airports, x, y) => {
   let xAirports = [];
@@ -18,18 +34,17 @@ const findAirportFromCoords = (airports, x, y) => {
   }
 
   let cA = commonAirports(xAirports, yAirports);
-  return cA;
+  let airport = minDistanceAirport(airports, cA, x, y);
+
+  return airport;
 };
 
 const commonAirports = (airportArrayOne, airportArrayTwo) => {
   return airportArrayOne.filter(function(n) {
     return airportArrayTwo.indexOf(n) !== -1;
-  })[0].toString();
+  });
 };
 
-const returnAirports = (ap) => {
-  return ap;
-};
 
 const myClosure = (func) => {
   return func;
@@ -44,7 +59,6 @@ const drawChosenAirport = (ctx, x, y) => {
 };
 
 const chooseSrcDest = (canvas, ctx, all_airports) => {
-
   let canvasLeft = canvas.offsetLeft;
   let canvasTop = canvas.offsetTop;
   let wtf = all_airports;
@@ -54,23 +68,21 @@ const chooseSrcDest = (canvas, ctx, all_airports) => {
 
   let srcAndDest = [];
 
-  canvas.addEventListener("click", (event) => {
+  let drawPath = canvas.addEventListener("click", (event) => {
+    let startAndFinish = myClosure(srcAndDest);
     let x = event.pageX - canvasLeft;
     let y = event.pageY - canvasTop;
     let context = myClosure(ctx);
-    let airports = returnAirports(all_airports);
-    let fAFC = myClosure(findAirportFromCoords);
-    let airport = airports[fAFC(airports, x, y)];
-    let sAD = myClosure(srcAndDest);
-    let dPG = myClosure(drawPathGenerations);
-    let pG = myClosure(pathGenerator);
-    drawChosenAirport(ctx, x, y);
-    sAD.push(airport);
-    if (sAD.length > 1) {
-      dPG(pG(airports, sAD[0], sAD[1]));
-      sAD.pop();
-      sAD.pop();
-    }
+    let airports = myClosure(all_airports);
+    let findAirports = myClosure(findAirportFromCoords);
+    let airport = airports[findAirports(airports, x, y)];
+    if (airport) { startAndFinish.push(airport);}
+    let drawPaths = myClosure(drawPathGenerations);
+    let pathGen = myClosure(pathGenerator);
+    if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
+    if (startAndFinish.length === 2) {
+      drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]));
+      }
     });
 
 };
