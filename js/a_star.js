@@ -36,16 +36,22 @@ const astar = {
         var openHeap = astar.heap();
         start.f = 100000000000;
         openHeap.push(start);
+        let inOrbit = 0;
+        let considered = 0;
+        let chosen = 0;
         let paths = [];
         while(openHeap.length > 0) {
 
 
-            var currentAirport = openHeap.shift();
+            let currentAirport = openHeap.shift();
+            considered ++;
             paths.push([currentAirport]);
 
             if(currentAirport === end) {
               let finalPath = generateFinalPath(currentAirport);
-              return paths.concat(finalPath);
+              chosen = finalPath.length;
+              // return inOrbit;
+              return [paths.concat(finalPath), [inOrbit, considered, chosen]];
             }
 
             currentAirport.closed = true;
@@ -70,6 +76,7 @@ const astar = {
                     neighborAirport.f = neighborAirport.g + neighborAirport.h;
 
                     if (!beenVisited) {
+                      inOrbit ++;
                       openHeap.push(neighborAirport);
                     }
                     else {

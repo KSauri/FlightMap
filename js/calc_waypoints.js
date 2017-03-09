@@ -1,8 +1,5 @@
 const calcWaypoints = (verts) => {
     let waypoints = [];
-    if (verts[1].chosen === true) {
-      debugger
-      waypoints.chosen = true; }
     for (let i = 1; i < verts.length; i++) {
         let pt0 = verts[i - 1];
         let pt1 = verts[i];
