@@ -4,15 +4,9 @@ import all_airports from './us_airports';
 
 
 
-const pathGenerator = (airports, start, end, method) => {
-  let pathGenerations;
-  if (method) {
-    pathGenerations = method(airports, start);
-  } else {
-    pathGenerations = astar.search(airports, start, end)[0];
-  }
+const pathGenerator = (airports, start, end) => {
+  let pathGenerations = astar.search(airports, start, end)[0];
   let paths = [];
-
   for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
     paths.push([]);
     for (let airport = 1; airport < pathGenerations[pathGen].length; airport++) {

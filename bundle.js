@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__ = __webpack_require__(5);
 
 let us_airports = {"city":{"1":"Fort Smith",
 "2":"Grand Forks","3":"Trenton","4":"Boston",
@@ -310,11 +310,11 @@ let us_airports = {"city":{"1":"Fort Smith",
 // data exported from Pandas ^^
 
 let all_airports = {};
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["a" /* parseAirports */](us_airports, all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["b" /* assignNeighbors */](all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["c" /* assignIsolatedNeighbors */](all_airports);
-__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignHubs */](all_airports);
-
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["b" /* parseAirports */](us_airports, all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["c" /* assignNeighbors */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignIsolatedNeighbors */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["e" /* assignHubs */](all_airports);
+__WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["f" /* connectNorthDakota */](all_airports);
 
 
 /* harmony default export */ __webpack_exports__["a"] = all_airports;
@@ -325,7 +325,7 @@ __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["d" /* assignHubs */](all_a
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(9);
 
 
 
@@ -522,7 +522,7 @@ const drawPathGenerations = (pathGens, toggleButton, generation = 0) => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__a_star__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__us_airports__ = __webpack_require__(0);
 
@@ -531,15 +531,9 @@ const drawPathGenerations = (pathGens, toggleButton, generation = 0) => {
 
 
 
-const pathGenerator = (airports, start, end, method) => {
-  let pathGenerations;
-  if (method) {
-    pathGenerations = method(airports, start);
-  } else {
-    pathGenerations = __WEBPACK_IMPORTED_MODULE_1__a_star__["a" /* default */].search(airports, start, end)[0];
-  }
+const pathGenerator = (airports, start, end) => {
+  let pathGenerations = __WEBPACK_IMPORTED_MODULE_1__a_star__["a" /* default */].search(airports, start, end)[0];
   let paths = [];
-
   for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
     paths.push([]);
     for (let airport = 1; airport < pathGenerations[pathGen].length; airport++) {
@@ -571,120 +565,6 @@ const pathGenerator = (airports, start, end, method) => {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__draw_airports__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_paths__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__a_star__ = __webpack_require__(1);
-
-
-
-
-
-
-
-window.cancel = false;
-
-const minDistanceAirport = (airports, commonAirports, x, y) => {
-  if (commonAirports.length === 0) { return null; }
-  let pos = {}; pos.x = x-8; pos.y = y-8;
-  let closest = commonAirports[0];
-  let minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["e" /* pythagoreanDis */])(pos, airports[closest].pos);
-  for (var i = 1; i < commonAirports.length; i++) {
-    let currDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["e" /* pythagoreanDis */])(pos, airports[commonAirports[i]].pos);
-    if (currDist < minDist) {
-      closest = commonAirports[i];
-      minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["e" /* pythagoreanDis */])(pos, airports[i].pos);
-    }
-  }
-  return closest;
-};
-
-const findAirportFromCoords = (airports, x, y) => {
-  let xAirports = [];
-  let yAirports = [];
-  for (let airport in airports) {
-    if (Math.abs(airports[airport].pos.x - x) < 10) {
-      xAirports.push(airport);
-    }
-  }
-  for (let airport in airports) {
-    if (Math.abs(airports[airport].pos.y - y) < 10) {
-      yAirports.push(airport);
-    }
-  }
-
-  let cA = commonAirports(xAirports, yAirports);
-  let airport = minDistanceAirport(airports, cA, x, y);
-
-  return airport;
-};
-
-const commonAirports = (airportArrayOne, airportArrayTwo) => {
-  return airportArrayOne.filter(function(n) {
-    return airportArrayTwo.indexOf(n) !== -1;
-  });
-};
-
-
-const myClosure = (func) => {
-  return func;
-};
-
-const drawChosenAirport = (ctx, x, y) => {
-  ctx.beginPath();
-  ctx.arc(x-8,y-8, 6, 0, Math.PI * 2, true);
-  ctx.fillStyle = "#c22f2f";
-  ctx.closePath();
-  ctx.fill();
-};
-
-const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
-  let canvasLeft = canvas.offsetLeft;
-  let canvasTop = canvas.offsetTop;
-  ctx.clearRect(0,0,1000,580);
-  ctx.drawImage(document.getElementById('source'), -16, -60);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__draw_airports__["a" /* default */])(ctx);
-  let srcAndDest = [];
-
-  let drawPath = canvas.addEventListener("click", (event) => {
-    let startAndFinish = myClosure(srcAndDest);
-    let x = event.pageX - canvasLeft;
-    let y = event.pageY - canvasTop;
-    let toggle = myClosure(toggleButton);
-    let astarResults = myClosure(__WEBPACK_IMPORTED_MODULE_5__a_star__["a" /* default */]);
-    let context = myClosure(ctx);
-    let airports = myClosure(all_airports);
-    let findAirports = myClosure(findAirportFromCoords);
-    let airport = airports[findAirports(airports, x, y)];
-    if (airport && startAndFinish.length < 3) { startAndFinish.push(airport);}
-    let drawPaths = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
-    let pathGen = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_paths__["a" /* default */]);
-    if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
-    if (startAndFinish.length === 2) {
-      toggle("disable");
-      let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
-      document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
-      document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
-      document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
-      drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
-      }
-    });
-
-};
-
-
-
-
-/* unused harmony default export */ var _unused_webpack_default_export = chooseSrcDest;
-
-
-/***/ }),
-/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -756,7 +636,7 @@ const parseAirports = (airports, result) => {
   addLat(airports, result);
   addNeighbors(result);
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseAirports;
+/* harmony export (immutable) */ __webpack_exports__["b"] = parseAirports;
 
 
 
@@ -765,7 +645,7 @@ const pythagoreanDis = (pos0, pos1) => {
   var d2 = Math.abs (pos1.y - pos0.y);
   return Math.sqrt(Math.pow(d1,2) + Math.pow(d2,2));
 };
-/* harmony export (immutable) */ __webpack_exports__["e"] = pythagoreanDis;
+/* harmony export (immutable) */ __webpack_exports__["a"] = pythagoreanDis;
 
 
 const shuffle = (array) => {
@@ -813,7 +693,7 @@ const assignNeighbors = (airports) => {
     }
   });
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = assignNeighbors;
+/* harmony export (immutable) */ __webpack_exports__["c"] = assignNeighbors;
 
 
 const assignIsolatedNeighbors = (airports) => {
@@ -821,14 +701,20 @@ const assignIsolatedNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 1) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 50) {
+        if (airportTwoId !== airportOneId && dist < 80) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
     }
   });
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = assignIsolatedNeighbors;
+/* harmony export (immutable) */ __webpack_exports__["d"] = assignIsolatedNeighbors;
+
+
+const connectNorthDakota = (airports) => {
+  makeNeighbors(airports["148"], airports["215"]);
+};
+/* harmony export (immutable) */ __webpack_exports__["f"] = connectNorthDakota;
 
 
 const assignHubs = (airports) => {
@@ -839,18 +725,197 @@ const assignHubs = (airports) => {
     }
     Object.keys(airports).forEach((nonHubAirportId) => {
       let dist = pythagoreanDis(airports[hubIds[hubOne]].pos, airports[nonHubAirportId].pos);
-      if (hubIds[hubOne] !== nonHubAirportId && dist < 130) {
+      if (hubIds[hubOne] !== nonHubAirportId &&
+        dist < 160 &&
+        hubOne !== 0) {
         makeNeighbors(airports[hubIds[hubOne]], airports[nonHubAirportId]);
-      }
+      } else if (hubOne === 0 &&
+        hubIds[hubOne] !== nonHubAirportId &&
+        dist < 200) {
+
+          makeNeighbors(airports[hubIds[hubOne]], airports[nonHubAirportId]);
+        }
     });
   }
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = assignHubs;
+/* harmony export (immutable) */ __webpack_exports__["e"] = assignHubs;
 
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__us_airports__ = __webpack_require__(0);
+
+
+const init = (airports) => {
+  for (var airport in airports) {
+    airports[airport].unchecked = true;
+  }
+};
+
+const flightBreadthFirstSearch = (airports, start, end) => {
+
+  init(airports);
+  start.unchecked = false;
+  let currentAirports = [start];
+  let nextAirports = [];
+  let bfsPaths = [];
+  let stillSearching = true;
+
+  while (stillSearching) {
+    stillSearching = false;
+    let currentGeneration = [];
+    for (let idx = 0; idx < currentAirports.length; idx ++) {
+      let currentQueue = [currentAirports[idx]];
+      for (var neighbor in currentAirports[idx].neighbors) {
+        let currentNeighbor = airports[neighbor.toString()];
+        if (currentNeighbor.unchecked) {
+          stillSearching = true;
+          currentNeighbor.unchecked = false;
+          nextAirports.push(currentNeighbor);
+          currentQueue.push(currentNeighbor);
+        }
+      }
+      currentGeneration.push(currentQueue);
+    }
+    bfsPaths.push(currentGeneration);
+    currentAirports = nextAirports;
+    nextAirports = [];
+  }
+  return bfsPaths;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = flightBreadthFirstSearch;
+
+
+/***/ }),
 /* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__draw_airports__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_paths__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__a_star__ = __webpack_require__(1);
+
+
+
+
+
+
+
+window.eventListeners = {};
+
+
+const minDistanceAirport = (airports, commonAirports, x, y) => {
+  if (commonAirports.length === 0) { return null; }
+  let pos = {}; pos.x = x-8; pos.y = y-8;
+  let closest = commonAirports[0];
+  let minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[closest].pos);
+  for (var i = 1; i < commonAirports.length; i++) {
+    let currDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[commonAirports[i]].pos);
+    if (currDist < minDist) {
+      closest = commonAirports[i];
+      minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["a" /* pythagoreanDis */])(pos, airports[i].pos);
+    }
+  }
+  return closest;
+};
+
+const findAirportFromCoords = (airports, x, y) => {
+  let xAirports = [];
+  let yAirports = [];
+  for (let airport in airports) {
+    if (Math.abs(airports[airport].pos.x - x) < 10) {
+      xAirports.push(airport);
+    }
+  }
+  for (let airport in airports) {
+    if (Math.abs(airports[airport].pos.y - y) < 10) {
+      yAirports.push(airport);
+    }
+  }
+
+  let cA = commonAirports(xAirports, yAirports);
+  let airport = minDistanceAirport(airports, cA, x, y);
+
+  return airport;
+};
+
+const commonAirports = (airportArrayOne, airportArrayTwo) => {
+  return airportArrayOne.filter(function(n) {
+    return airportArrayTwo.indexOf(n) !== -1;
+  });
+};
+
+
+const myClosure = (func) => {
+  return func;
+};
+
+const drawChosenAirport = (ctx, x, y) => {
+  ctx.beginPath();
+  ctx.arc(x-8,y-8, 6, 0, Math.PI * 2, true);
+  ctx.fillStyle = "#c22f2f";
+  ctx.closePath();
+  ctx.fill();
+};
+
+
+const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
+  let canvasLeft = canvas.offsetLeft;
+  let canvasTop = canvas.offsetTop;
+  ctx.clearRect(0,0,1000,580);
+  ctx.drawImage(document.getElementById('source'), -16, -60);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__draw_airports__["a" /* default */])(ctx);
+  let srcAndDest = [];
+  window.eventListeners.drawPathCB = drawPath(canvasLeft,
+    canvasTop,
+    toggleButton,
+    ctx,
+    srcAndDest,
+    canvas);
+  canvas.addEventListener("click", eventListeners.drawPathCB);
+};
+
+
+let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event) => {
+  let startAndFinish = sAF;
+  let x = event.pageX - canvasLeft;
+  let y = event.pageY - canvasTop;
+  let toggle = myClosure(toggleButton);
+  let astarResults = myClosure(__WEBPACK_IMPORTED_MODULE_5__a_star__["a" /* default */]);
+  let context = myClosure(ctx);
+  let airports = myClosure(__WEBPACK_IMPORTED_MODULE_1__us_airports__["a" /* default */]);
+  let findAirports = myClosure(findAirportFromCoords);
+  let airport = airports[findAirports(airports, x, y)];
+  if (airport && startAndFinish.length < 3) { startAndFinish.push(airport);}
+  let drawPaths = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
+  let pathGen = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_paths__["a" /* default */]);
+  if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
+  if (startAndFinish.length === 2) {
+    toggle("disable");
+    let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
+    document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
+    document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
+    document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
+    drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
+
+    canvas.removeEventListener("click", eventListeners.drawPathCB);
+  }
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = chooseSrcDest;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -861,9 +926,9 @@ const calcWaypoints = (verts) => {
         let pt1 = verts[i];
         let dx = pt1.x - pt0.x;
         let dy = pt1.y - pt0.y;
-        for (let j = 0; j < 50; j++) {
-            let x = Math.floor(pt0.x + dx * j / 50);
-            let y = Math.floor(pt0.y + dy * j / 50);
+        for (let j = 0; j < 40; j++) {
+            let x = Math.floor(pt0.x + dx * j / 40);
+            let y = Math.floor(pt0.y + dy * j / 40);
             waypoints.push({
                 x: x,
                 y: y
@@ -877,7 +942,7 @@ const calcWaypoints = (verts) => {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -964,7 +1029,7 @@ function min_first(a, b) { return a.f - b.f; }
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -974,8 +1039,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_draw_paths__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_generate_paths__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_us_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_choose_src_dest__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_breadth_first_paths__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_choose_src_dest__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_breadth_first_paths__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_generate_bfs_paths__ = __webpack_require__(11);
+
 
 
 
@@ -997,70 +1064,55 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.drawImage(document.getElementById('source'), -16, -60);
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__js_draw_airports__["a" /* default */])(ctx);
 
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_draw_paths__["a" /* default */])(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__js_generate_paths__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_4__js_us_airports__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4__js_us_airports__["a" /* default */]["1"], null, __WEBPACK_IMPORTED_MODULE_6__js_breadth_first_paths__["a" /* default */]));
-    // let toggleButton = (setter) => {
-    //   if (setter === "disable") {
-    //     document.getElementById("srcAndDest").innerHTML = "Simulating Flights";
-    //     document.getElementById("srcAndDest").setAttribute("disabled", "true");
-    //   } else if (setter === "enable") {
-    //     document.getElementById("srcAndDest").innerHTML = "Clear and fly again!";
-    //     document.getElementById("srcAndDest").removeAttribute("disabled");
-    //   }
-    // };
-    // document.getElementById("srcAndDest").addEventListener("click", () => {
-    //   chooseSrcDest(canvas, ctx, all_airports, toggleButton);
-    // });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_draw_paths__["a" /* default */])(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__js_generate_bfs_paths__["a" /* default */])(__WEBPACK_IMPORTED_MODULE_4__js_us_airports__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4__js_us_airports__["a" /* default */]["1"], null));
+    let toggleButton = (setter) => {
+      if (setter === "disable") {
+        document.getElementById("srcAndDest").innerHTML = "Simulating Flights";
+        document.getElementById("srcAndDest").setAttribute("disabled", "true");
+      } else if (setter === "enable") {
+        document.getElementById("srcAndDest").innerHTML = "Clear and fly again!";
+        document.getElementById("srcAndDest").removeAttribute("disabled");
+      }
+    };
+    document.getElementById("srcAndDest").addEventListener("click", () => {
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__js_choose_src_dest__["a" /* default */])(canvas, ctx, __WEBPACK_IMPORTED_MODULE_4__js_us_airports__["a" /* default */], toggleButton);
+    });
 
 });
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__us_airports__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__us_airports__ = __webpack_require__(0);
 
 
-const init = (airports) => {
-  for (var airport in airports) {
-    airports[airport].unchecked = true;
-  }
-};
 
-const flightBreadthFirstSearch = (airports, start, end) => {
 
-  init(airports);
-  start.unchecked = false;
-  let currentAirports = [start];
-  let nextAirports = [];
-  let bfsPaths = [];
-  let stillSearching = true;
 
-  while (stillSearching) {
-    stillSearching = false;
-    let currentGeneration = [];
-    for (let idx = 0; idx < currentAirports.length; idx ++) {
-      let currentQueue = [currentAirports[idx]];
-      for (var neighbor in currentAirports[idx].neighbors) {
-        let currentNeighbor = airports[neighbor.toString()];
-        if (currentNeighbor.unchecked) {
-          stillSearching = true;
-          currentNeighbor.unchecked = false;
-          nextAirports.push(currentNeighbor);
-          currentQueue.push(currentNeighbor);
+const bfsPathGenerator = (airports, start, end) => {
+  let pathGenerations = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__["a" /* default */])(airports, start);
+  let paths = [];
+  for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
+    let currentPathGen = [];
+    for (var airportGen = 0; airportGen < pathGenerations[pathGen].length; airportGen++) {
+      for (let airport = 1; airport < pathGenerations[pathGen][airportGen].length; airport++) {
+        let wayPoints = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__calc_waypoints__["a" /* default */])([pathGenerations[pathGen][airportGen][0].pos,
+          pathGenerations[pathGen][airportGen][airport].pos]);
+          currentPathGen.push(wayPoints);
         }
       }
-      currentGeneration.push(currentQueue);
+      paths.push(currentPathGen);
     }
-    bfsPaths.push(currentGeneration);
-    currentAirports = nextAirports;
-    nextAirports = [];
-  }
-  return bfsPaths;
+  return paths;
 };
 
-/* harmony default export */ __webpack_exports__["a"] = flightBreadthFirstSearch;
+
+/* harmony default export */ __webpack_exports__["a"] = bfsPathGenerator;
 
 
 /***/ })

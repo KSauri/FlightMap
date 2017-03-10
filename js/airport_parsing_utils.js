@@ -105,12 +105,16 @@ export const assignIsolatedNeighbors = (airports) => {
     if (size(airports[airportOneId].neighbors) < 1) {
       Object.keys(airports).forEach((airportTwoId) => {
         let dist = pythagoreanDis(airports[airportOneId].pos, airports[airportTwoId].pos);
-        if (airportTwoId !== airportOneId && dist < 50) {
+        if (airportTwoId !== airportOneId && dist < 80) {
           makeNeighbors(airports[airportOneId], airports[airportTwoId]);
         }
       });
     }
   });
+};
+
+export const connectNorthDakota = (airports) => {
+  makeNeighbors(airports["148"], airports["215"]);
 };
 
 export const assignHubs = (airports) => {
@@ -121,9 +125,16 @@ export const assignHubs = (airports) => {
     }
     Object.keys(airports).forEach((nonHubAirportId) => {
       let dist = pythagoreanDis(airports[hubIds[hubOne]].pos, airports[nonHubAirportId].pos);
-      if (hubIds[hubOne] !== nonHubAirportId && dist < 130) {
+      if (hubIds[hubOne] !== nonHubAirportId &&
+        dist < 160 &&
+        hubOne !== 0) {
         makeNeighbors(airports[hubIds[hubOne]], airports[nonHubAirportId]);
-      }
+      } else if (hubOne === 0 &&
+        hubIds[hubOne] !== nonHubAirportId &&
+        dist < 200) {
+
+          makeNeighbors(airports[hubIds[hubOne]], airports[nonHubAirportId]);
+        }
     });
   }
 };

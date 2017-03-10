@@ -240,7 +240,7 @@ parseUtils.parseAirports(us_airports, all_airports);
 parseUtils.assignNeighbors(all_airports);
 parseUtils.assignIsolatedNeighbors(all_airports);
 parseUtils.assignHubs(all_airports);
-
+parseUtils.connectNorthDakota(all_airports);
 
 
 export default all_airports;

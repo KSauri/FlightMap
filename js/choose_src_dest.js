@@ -5,7 +5,8 @@ import drawPathGenerations from './draw_paths';
 import { pythagoreanDis } from './airport_parsing_utils';
 import astar from './a_star';
 
-window.cancel = false;
+window.eventListeners = {};
+
 
 const minDistanceAirport = (airports, commonAirports, x, y) => {
   if (commonAirports.length === 0) { return null; }
@@ -61,6 +62,7 @@ const drawChosenAirport = (ctx, x, y) => {
   ctx.fill();
 };
 
+
 const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   let canvasLeft = canvas.offsetLeft;
   let canvasTop = canvas.offsetTop;
@@ -68,34 +70,41 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   ctx.drawImage(document.getElementById('source'), -16, -60);
   drawAirports(ctx);
   let srcAndDest = [];
-
-  let drawPath = canvas.addEventListener("click", (event) => {
-    let startAndFinish = myClosure(srcAndDest);
-    let x = event.pageX - canvasLeft;
-    let y = event.pageY - canvasTop;
-    let toggle = myClosure(toggleButton);
-    let astarResults = myClosure(astar);
-    let context = myClosure(ctx);
-    let airports = myClosure(all_airports);
-    let findAirports = myClosure(findAirportFromCoords);
-    let airport = airports[findAirports(airports, x, y)];
-    if (airport && startAndFinish.length < 3) { startAndFinish.push(airport);}
-    let drawPaths = myClosure(drawPathGenerations);
-    let pathGen = myClosure(pathGenerator);
-    if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
-    if (startAndFinish.length === 2) {
-      toggle("disable");
-      let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
-      document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
-      document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
-      document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
-      drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
-      }
-    });
-
+  window.eventListeners.drawPathCB = drawPath(canvasLeft,
+    canvasTop,
+    toggleButton,
+    ctx,
+    srcAndDest,
+    canvas);
+  canvas.addEventListener("click", eventListeners.drawPathCB);
 };
 
 
+let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event) => {
+  let startAndFinish = sAF;
+  let x = event.pageX - canvasLeft;
+  let y = event.pageY - canvasTop;
+  let toggle = myClosure(toggleButton);
+  let astarResults = myClosure(astar);
+  let context = myClosure(ctx);
+  let airports = myClosure(all_airports);
+  let findAirports = myClosure(findAirportFromCoords);
+  let airport = airports[findAirports(airports, x, y)];
+  if (airport && startAndFinish.length < 3) { startAndFinish.push(airport);}
+  let drawPaths = myClosure(drawPathGenerations);
+  let pathGen = myClosure(pathGenerator);
+  if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
+  if (startAndFinish.length === 2) {
+    toggle("disable");
+    let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
+    document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
+    document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
+    document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
+    drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
+
+    canvas.removeEventListener("click", eventListeners.drawPathCB);
+  }
+};
 
 
 export default chooseSrcDest;
