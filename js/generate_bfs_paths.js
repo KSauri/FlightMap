@@ -12,6 +12,9 @@ const bfsPathGenerator = (airports, start, end) => {
       for (let airport = 1; airport < pathGenerations[pathGen][airportGen].length; airport++) {
         let wayPoints = calcWaypoints([pathGenerations[pathGen][airportGen][0].pos,
           pathGenerations[pathGen][airportGen][airport].pos]);
+          if (pathGenerations[pathGen][airportGen].final) {
+            wayPoints.final = true;
+          }
           currentPathGen.push(wayPoints);
         }
       }

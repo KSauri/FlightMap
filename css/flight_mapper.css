@@ -1,26 +1,142 @@
-.map {
-  position: absolute;
-  margin-top: 80px;
-  top: 0px;
-  left: 100px;
-  z-index: -3;
-  height: 700px;
-  width: 951px;
+
+
+h1, h3, button {
+  font-family: 'Orbitron', sans-serif;
 }
 
 .white-space {
   height: 80px;
 }
 
+
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
 }
 
-h1 {
-  font-family: 'Crimson Text', serif;
+.title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.title-container h4 {
+  margin-bottom: 0;
+}
+
+.title {
+  width: 942px;
+}
+
+.byline {
+  width: 200px;
+  display: flex;
+  justify-content: flex-start;;
+}
+
+.container h1 {
+  font-family: 'Orbitron', sans-serif;
   font-size: 30px;
+  font-weight: 700;
+  margin: 8px;
   /*margin: 0 auto;*/
+}
+
+.container h4 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  margin: 5px;
+}
+
+.canvas-and-stats {
+  display: flex;
+  flex-direction: row;
+}
+
+.stats {
+  width: 200px;
+  height: 576px;
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.description {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.description p {
+  font-family: 'Yantramanav', sans-serif;
+}
+.description h3 {
+}
+
+.indiv-stat {
+  width: 100%;
+  padding: 5px 2px;
+}
+
+.indiv-stat h3 {
+  font-size: 16px;
+  padding: 0px 3px;
+}
+
+.stats button {
+  padding: 5px;
+  width: 180px;
+  height: 33px;
+  font-weight: 700;
+  background-color: rgba(223, 16, 16, 0.93);
+  margin: 15px 0px;
+  border: 1px solid rgb(82, 83, 83);
+  border-radius: 5px;
+}
+
+.stats button:focus {
+  background-color: rgba(223, 16, 16, 0.65);
+}
+
+.stats button:disabled {
+  background-color: lightgray;
+  color: rgba(223, 16, 16, 0.93);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.5;
+}
+
+.modal-text {
+  background-color: white;
+  opacity: 1;
+  z-index: 1;
+  position: fixed;
+  width: 600px;
+  height: 400px;
+  margin-top: 50px;
+}
+
+.modal-text p {
+  padding: 20px 70px;
+  margin: auto;
+}
+
+.modal-text-container {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-hidden {
+  display: none;
 }

@@ -5,8 +5,6 @@ import drawPathGenerations from './draw_paths';
 import { pythagoreanDis } from './airport_parsing_utils';
 import astar from './a_star';
 
-window.eventListeners = {};
-
 
 const minDistanceAirport = (airports, commonAirports, x, y) => {
   if (commonAirports.length === 0) { return null; }
@@ -56,7 +54,7 @@ const myClosure = (func) => {
 
 const drawChosenAirport = (ctx, x, y) => {
   ctx.beginPath();
-  ctx.arc(x-8,y-8, 6, 0, Math.PI * 2, true);
+  ctx.arc(x,y, 6, 0, Math.PI * 2, true);
   ctx.fillStyle = "#c22f2f";
   ctx.closePath();
   ctx.fill();
@@ -66,7 +64,8 @@ const drawChosenAirport = (ctx, x, y) => {
 const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   let canvasLeft = canvas.offsetLeft;
   let canvasTop = canvas.offsetTop;
-  ctx.clearRect(0,0,1000,580);
+  canvas.removeEventListener("click", eventListeners.drawPathCB);
+  ctx.clearRect(0,0,940,580);
   ctx.drawImage(document.getElementById('source'), -16, -60);
   drawAirports(ctx);
   let srcAndDest = [];
@@ -77,6 +76,19 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
     srcAndDest,
     canvas);
   canvas.addEventListener("click", eventListeners.drawPathCB);
+};
+
+let addAirport = (airportsArr, airport) => {
+  if (airport && airportsArr.length < 1) {
+    return true;
+  } else if (airport &&
+    airportsArr.length === 1 &&
+    airportsArr[0].id !== airport.id) {
+      return true;
+    }
+  else {
+    return false;
+  }
 };
 
 
@@ -90,7 +102,7 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
   let airports = myClosure(all_airports);
   let findAirports = myClosure(findAirportFromCoords);
   let airport = airports[findAirports(airports, x, y)];
-  if (airport && startAndFinish.length < 3) { startAndFinish.push(airport);}
+  if (addAirport(startAndFinish, airport)) { startAndFinish.push(airport);}
   let drawPaths = myClosure(drawPathGenerations);
   let pathGen = myClosure(pathGenerator);
   if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
@@ -98,10 +110,12 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
     toggle("disable");
     let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
     document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
+    document.getElementById("inOrbit-percentage").innerHTML = `% of Total: ${Math.round(results[0]/260 * 100)}`;
     document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
+
+    document.getElementById("considered-percentage").innerHTML = `% of Total: ${Math.round(results[1]/260 * 100)}`;
     document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
-
     canvas.removeEventListener("click", eventListeners.drawPathCB);
   }
 };

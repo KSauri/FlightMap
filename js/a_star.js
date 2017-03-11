@@ -22,6 +22,7 @@ const astar = {
           airports[airport].g = 0;
           airports[airport].g = 0;
           airports[airport].h = 0;
+          airports[airport].final = false;
           airports[airport].visited = false;
           airports[airport].closed = false;
           airports[airport].parent = null;
@@ -50,7 +51,6 @@ const astar = {
             if(currentAirport === end) {
               let finalPath = generateFinalPath(currentAirport);
               chosen = finalPath.length;
-              // return inOrbit;
               return [paths.concat(finalPath), [inOrbit, considered, chosen]];
             }
 
@@ -89,8 +89,8 @@ const astar = {
         return [];
     },
     manhattan: function(pos0, pos1) {
-        var d1 = Math.abs (pos1.x - pos0.x);
-        var d2 = Math.abs (pos1.y - pos0.y);
+        var d1 = Math.abs(pos1.x - pos0.x);
+        var d2 = Math.abs(pos1.y - pos0.y);
         return d1 + d2;
     }
 };

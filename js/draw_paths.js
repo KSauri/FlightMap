@@ -6,7 +6,7 @@ const drawLineSegment = (pos, idx) => {
   ctx.moveTo(pos[idx - 1].x, pos[idx - 1].y);
   ctx.lineTo(pos[idx].x, pos[idx].y);
   if (pos.final) {
-    ctx.strokeStyle = "orange";
+    ctx.strokeStyle = "#8121cb";
     ctx.lineWidth = 2;
   } else {
     ctx.strokeStyle = "#e5df34";
@@ -37,7 +37,9 @@ const drawPathGenerations = (pathGens, toggleButton, generation = 0) => {
     toggleButton("enable");
     return;}
   while (pathGens[generation].length === 0 || generation === pathGens.length) {
-    if (generation === pathGens.length - 1) { return; }
+    if (generation === pathGens.length - 1) {
+      toggleButton("enable");
+      return; }
     generation ++;
   }
   for (var path = 0; path < pathGens[generation].length - 1; path++) {

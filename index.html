@@ -2,24 +2,68 @@
   <head>
     <title>FlightMapping</title>
     <link rel="stylesheet" type="text/css" href="css/flight_mapper.css">
-    <link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:400,700|Yantramanav" rel="stylesheet">
   </head>
 
   <body>
-    <div class="container">
-      <h1>Flight Mapper</h1>
-      <canvas id="canvas"></canvas>
-      <div style="display:none;">
-        <img id="source" src="map/map.png" width="951" height="700">
-      </div>
-      <script type="application/javascript" src="bundle.js"></script>
-      <button id="srcAndDest">Choose Start and End!</button>
-      <h3 id="inOrbit">Possible Choices: </h3>
-      <h3 id="considered">Considered Paths: </h3>
-      <h3 id="final">Final Path Length: </h3>
-      <h3>Welcome!</h3>
-      <p>The flight mapper uses the A* path finding algorithm.</p>
+    <div class="modal modal-shared" id="modal">
     </div>
+    <div class="modal-text-container modal-shared" id="modal-text-container">
+      <div class="modal-text">
+        <h3>Digital Path Finding</h3>
+        <p>Your computer needs to find a path from A to B - how does it do it? There
+          are a number of ways, but one that is both efficient and approachable is
+          the A* pathfinding algorithm.  So, how does it work? The algorithm starts
+          at the beginning node (airport in this case) and adds each node it can reach
+          to a pool of "possible choices", and then it picks best one.  How does it
+          decide which is best? Simple! It considers how far it is from start to each
+          new possible node (distance so far) combined with a 'heuristic'.  The heuristic
+          is just a tool it uses to estimate distance from each possible node to the
+          final node.  In this case, we use the manhattan distance to the end node.
+          It does this until it gets to the end node and voila! We have the shortest
+          path in much less work than exhaustive search!  I know what you're thinking
+          and yes it is neat af.</p>
+        </div>
+    </div>
+    <div class="container">
+      <div class="title-container">
+        <div class="title">
+          <h1>Flight Mapper</h1>
+        </div>
+        <div class="byline">
+          <h4>By Kyle Sauri</h4>
+        </div>
+      </div>
+      <div class="canvas-and-stats">
+        <div>
+          <canvas id="canvas"></canvas>
+          <div style="display:none;">
+            <img id="source" src="map/map.png" width="951" height="700">
+          </div>
+        </div>
+        <div class="stats">
+          <div class="indiv-stat">
+            <h3 id="inOrbit">Possible Choices: </h3>
+          </div>
+          <div class="indiv-stat">
+            <h3 id="inOrbit-percentage">% of Total: </h3>
+          </div>
+          <div class="indiv-stat">
+            <h3 id="considered">Considered Paths: </h3>
+          </div>
+          <div class="indiv-stat">
+            <h3 id="considered-percentage">% of Total: </h3>
+          </div>
+          <div class="indiv-stat">
+            <h3 id="final">Final Path Length: </h3>
+          </div>
+          <button id="explanation">Background Info</button>
+          <button id="exhaustive">Exhaustive Search Demo</button>
+          <button id="srcAndDest">Choose Start and End!</button>
+        </div>
+      </div>
+    </div>
+    <script type="application/javascript" src="bundle.js"></script>
   </body>
 </html>
 

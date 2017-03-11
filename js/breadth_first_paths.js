@@ -35,7 +35,22 @@ const flightBreadthFirstSearch = (airports, start, end) => {
     currentAirports = nextAirports;
     nextAirports = [];
   }
+  addHardcodedAirports(airports, bfsPaths);
   return bfsPaths;
 };
+
+
+const addHardcodedAirports = (airports, pathArray) => {
+  let path1 = [airports["117"], airports["63"]];
+  path1.final = true;
+  let path2 = [airports["63"], airports["17"]];
+  path2.final = true;
+  let path3 = [airports["17"], airports["230"]];
+  path2.final = true;
+  pathArray.push([path1]);
+  pathArray.push([path2]);
+  pathArray.push([path3]);
+};
+
 
 export default flightBreadthFirstSearch;
