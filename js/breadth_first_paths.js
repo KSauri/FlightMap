@@ -46,7 +46,7 @@ const addHardcodedAirports = (airports, pathArray) => {
   let path2 = [airports["63"], airports["17"]];
   path2.final = true;
   let path3 = [airports["17"], airports["230"]];
-  path2.final = true;
+  path3.final = true;
   pathArray.push([path1]);
   pathArray.push([path2]);
   pathArray.push([path3]);

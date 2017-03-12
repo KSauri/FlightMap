@@ -24,7 +24,7 @@ const exhaustiveDemo = (canvas, ctx, all_airports, toggleButton) => {
   document.getElementById("inOrbit-percentage").innerHTML = `% of Total: N/A`;
   document.getElementById("considered").innerHTML = `Considered Paths: 260`;
   document.getElementById("considered-percentage").innerHTML = `% of Total: 100`;
-  document.getElementById("final").innerHTML = `Final Path Length: 2`;
+  document.getElementById("final").innerHTML = `Final Path Length: 3`;
 };
 
 

@@ -8,14 +8,14 @@ import astar from './a_star';
 
 const minDistanceAirport = (airports, commonAirports, x, y) => {
   if (commonAirports.length === 0) { return null; }
-  let pos = {}; pos.x = x-8; pos.y = y-8;
+  let pos = {}; pos.x = x; pos.y = y;
   let closest = commonAirports[0];
   let minDist = pythagoreanDis(pos, airports[closest].pos);
   for (var i = 1; i < commonAirports.length; i++) {
     let currDist = pythagoreanDis(pos, airports[commonAirports[i]].pos);
     if (currDist < minDist) {
       closest = commonAirports[i];
-      minDist = pythagoreanDis(pos, airports[i].pos);
+      minDist = currDist;
     }
   }
   return closest;

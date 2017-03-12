@@ -833,14 +833,14 @@ const calcWaypoints = (verts) => {
 
 const minDistanceAirport = (airports, commonAirports, x, y) => {
   if (commonAirports.length === 0) { return null; }
-  let pos = {}; pos.x = x-8; pos.y = y-8;
+  let pos = {}; pos.x = x; pos.y = y;
   let closest = commonAirports[0];
   let minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["f" /* pythagoreanDis */])(pos, airports[closest].pos);
   for (var i = 1; i < commonAirports.length; i++) {
     let currDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["f" /* pythagoreanDis */])(pos, airports[commonAirports[i]].pos);
     if (currDist < minDist) {
       closest = commonAirports[i];
-      minDist = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__["f" /* pythagoreanDis */])(pos, airports[i].pos);
+      minDist = currDist;
     }
   }
   return closest;
@@ -983,7 +983,7 @@ const exhaustiveDemo = (canvas, ctx, all_airports, toggleButton) => {
   document.getElementById("inOrbit-percentage").innerHTML = `% of Total: N/A`;
   document.getElementById("considered").innerHTML = `Considered Paths: 260`;
   document.getElementById("considered-percentage").innerHTML = `% of Total: 100`;
-  document.getElementById("final").innerHTML = `Final Path Length: 2`;
+  document.getElementById("final").innerHTML = `Final Path Length: 3`;
 };
 
 
@@ -1044,7 +1044,7 @@ const addHardcodedAirports = (airports, pathArray) => {
   let path2 = [airports["63"], airports["17"]];
   path2.final = true;
   let path3 = [airports["17"], airports["230"]];
-  path2.final = true;
+  path3.final = true;
   pathArray.push([path1]);
   pathArray.push([path2]);
   pathArray.push([path3]);
