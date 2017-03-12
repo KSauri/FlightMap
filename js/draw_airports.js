@@ -22,3 +22,7 @@ const drawAirports = (ctx) => {
 };
 
 export default drawAirports;
+
+
+// let x = event.pageX - canvasLeft;
+// let y = event.pageY - canvasTop;

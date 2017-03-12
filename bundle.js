@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__ = __webpack_require__(6);
 
 let us_airports = {"city":{"1":"Fort Smith",
 "2":"Grand Forks","3":"Trenton","4":"Boston",
@@ -325,7 +325,7 @@ __WEBPACK_IMPORTED_MODULE_0__airport_parsing_utils__["e" /* connectNorthDakota *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__priority_queue__ = __webpack_require__(11);
 
 
 
@@ -458,6 +458,10 @@ const drawAirports = (ctx) => {
 /* harmony default export */ __webpack_exports__["a"] = drawAirports;
 
 
+// let x = event.pageX - canvasLeft;
+// let y = event.pageY - canvasTop;
+
+
 /***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -524,7 +528,44 @@ const drawPathGenerations = (pathGens, toggleButton, generation = 0) => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__us_airports__ = __webpack_require__(0);
+
+
+
+
+
+const bfsPathGenerator = (airports, start, end) => {
+  let pathGenerations = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__["a" /* default */])(airports, start);
+  let paths = [];
+  for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
+    let currentPathGen = [];
+    for (var airportGen = 0; airportGen < pathGenerations[pathGen].length; airportGen++) {
+      for (let airport = 1; airport < pathGenerations[pathGen][airportGen].length; airport++) {
+        let wayPoints = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__calc_waypoints__["a" /* default */])([pathGenerations[pathGen][airportGen][0].pos,
+          pathGenerations[pathGen][airportGen][airport].pos]);
+          if (pathGenerations[pathGen][airportGen].final) {
+            wayPoints.final = true;
+          }
+          currentPathGen.push(wayPoints);
+        }
+      }
+      paths.push(currentPathGen);
+    }
+  return paths;
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = bfsPathGenerator;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__a_star__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__us_airports__ = __webpack_require__(0);
 
@@ -566,7 +607,7 @@ const pathGenerator = (airports, start, end) => {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -745,79 +786,42 @@ const assignHubs = (airports) => {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__us_airports__ = __webpack_require__(0);
-
-
-const init = (airports) => {
-  for (var airport in airports) {
-    airports[airport].unchecked = true;
-  }
-};
-
-const flightBreadthFirstSearch = (airports, start, end) => {
-
-  init(airports);
-  start.unchecked = false;
-  let currentAirports = [start];
-  let nextAirports = [];
-  let bfsPaths = [];
-  let stillSearching = true;
-
-  while (stillSearching) {
-    stillSearching = false;
-    let currentGeneration = [];
-    for (let idx = 0; idx < currentAirports.length; idx ++) {
-      let currentQueue = [currentAirports[idx]];
-      for (var neighbor in currentAirports[idx].neighbors) {
-        let currentNeighbor = airports[neighbor.toString()];
-        if (currentNeighbor.unchecked) {
-          stillSearching = true;
-          currentNeighbor.unchecked = false;
-          nextAirports.push(currentNeighbor);
-          currentQueue.push(currentNeighbor);
+const calcWaypoints = (verts) => {
+    let waypoints = [];
+    for (let i = 1; i < verts.length; i++) {
+        let pt0 = verts[i - 1];
+        let pt1 = verts[i];
+        let dx = pt1.x - pt0.x;
+        let dy = pt1.y - pt0.y;
+        for (let j = 0; j < 42; j++) {
+            let x = pt0.x + dx * j / 40;
+            let y = pt0.y + dy * j / 40;
+            waypoints.push({
+                x: x,
+                y: y
+            });
         }
-      }
-      currentGeneration.push(currentQueue);
     }
-    bfsPaths.push(currentGeneration);
-    currentAirports = nextAirports;
-    nextAirports = [];
-  }
-  addHardcodedAirports(airports, bfsPaths);
-  return bfsPaths;
+    return (waypoints);
 };
 
-
-const addHardcodedAirports = (airports, pathArray) => {
-  let path1 = [airports["117"], airports["63"]];
-  path1.final = true;
-  let path2 = [airports["63"], airports["17"]];
-  path2.final = true;
-  let path3 = [airports["17"], airports["230"]];
-  path2.final = true;
-  pathArray.push([path1]);
-  pathArray.push([path2]);
-  pathArray.push([path3]);
-};
-
-
-/* harmony default export */ __webpack_exports__["a"] = flightBreadthFirstSearch;
+/* harmony default export */ __webpack_exports__["a"] = calcWaypoints;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__draw_airports__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_paths__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_paths__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__airport_parsing_utils__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__a_star__ = __webpack_require__(1);
 
 
@@ -933,7 +937,6 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
     document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
     document.getElementById("inOrbit-percentage").innerHTML = `% of Total: ${Math.round(results[0]/260 * 100)}`;
     document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
-
     document.getElementById("considered-percentage").innerHTML = `% of Total: ${Math.round(results[1]/260 * 100)}`;
     document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
@@ -946,34 +949,113 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const calcWaypoints = (verts) => {
-    let waypoints = [];
-    for (let i = 1; i < verts.length; i++) {
-        let pt0 = verts[i - 1];
-        let pt1 = verts[i];
-        let dx = pt1.x - pt0.x;
-        let dy = pt1.y - pt0.y;
-        for (let j = 0; j < 42; j++) {
-            let x = pt0.x + dx * j / 40;
-            let y = pt0.y + dy * j / 40;
-            waypoints.push({
-                x: x,
-                y: y
-            });
-        }
-    }
-    return (waypoints);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__draw_airports__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_bfs_paths__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
+
+
+
+
+
+
+const myClosure = (func) => {
+  return func;
 };
 
-/* harmony default export */ __webpack_exports__["a"] = calcWaypoints;
+
+const exhaustiveDemo = (canvas, ctx, all_airports, toggleButton) => {
+  let canvasLeft = canvas.offsetLeft;
+  let canvasTop = canvas.offsetTop;
+  canvas.removeEventListener("click", eventListeners.drawPathCB);
+  ctx.clearRect(0,0,940,580);
+  ctx.drawImage(document.getElementById('source'), -16, -60);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__draw_airports__["a" /* default */])(ctx);
+  let drawBFSPaths = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
+  let bfsGenerator = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_bfs_paths__["a" /* default */]);
+  toggleButton("disable");
+  drawBFSPaths(bfsGenerator(all_airports, all_airports["117"], null), toggleButton);
+  document.getElementById("inOrbit").innerHTML = `Possible Choices: N/A`;
+  document.getElementById("inOrbit-percentage").innerHTML = `% of Total: N/A`;
+  document.getElementById("considered").innerHTML = `Considered Paths: 260`;
+  document.getElementById("considered-percentage").innerHTML = `% of Total: 100`;
+  document.getElementById("final").innerHTML = `Final Path Length: 2`;
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = exhaustiveDemo;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__us_airports__ = __webpack_require__(0);
+
+
+const init = (airports) => {
+  for (var airport in airports) {
+    airports[airport].unchecked = true;
+  }
+};
+
+const flightBreadthFirstSearch = (airports, start, end) => {
+
+  init(airports);
+  start.unchecked = false;
+  let currentAirports = [start];
+  let nextAirports = [];
+  let bfsPaths = [];
+  let stillSearching = true;
+
+  while (stillSearching) {
+    stillSearching = false;
+    let currentGeneration = [];
+    for (let idx = 0; idx < currentAirports.length; idx ++) {
+      let currentQueue = [currentAirports[idx]];
+      for (var neighbor in currentAirports[idx].neighbors) {
+        let currentNeighbor = airports[neighbor.toString()];
+        if (currentNeighbor.unchecked) {
+          stillSearching = true;
+          currentNeighbor.unchecked = false;
+          nextAirports.push(currentNeighbor);
+          currentQueue.push(currentNeighbor);
+        }
+      }
+      currentGeneration.push(currentQueue);
+    }
+    bfsPaths.push(currentGeneration);
+    currentAirports = nextAirports;
+    nextAirports = [];
+  }
+  addHardcodedAirports(airports, bfsPaths);
+  return bfsPaths;
+};
+
+
+const addHardcodedAirports = (airports, pathArray) => {
+  let path1 = [airports["117"], airports["63"]];
+  path1.final = true;
+  let path2 = [airports["63"], airports["17"]];
+  path2.final = true;
+  let path3 = [airports["17"], airports["230"]];
+  path2.final = true;
+  pathArray.push([path1]);
+  pathArray.push([path2]);
+  pathArray.push([path3]);
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = flightBreadthFirstSearch;
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1060,7 +1142,7 @@ function min_first(a, b) { return a.f - b.f; }
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1068,11 +1150,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_a_star__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_draw_airports__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_draw_paths__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_generate_paths__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_generate_paths__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_us_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_choose_src_dest__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_exhaustive_search_demo__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_generate_bfs_paths__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_choose_src_dest__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_exhaustive_search_demo__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_generate_bfs_paths__ = __webpack_require__(4);
 
 
 
@@ -1089,9 +1171,16 @@ document.addEventListener("DOMContentLoaded", function(){
     canvas.width = 940;
     canvas.height = 580;
     let ctx = canvas.getContext('2d');
+    var image = new Image();
+    image.src = "map/map.png";
+    image.onload = function() {
+      ctx.drawImage(image, -16, -60);
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__js_draw_airports__["a" /* default */])(ctx);
+    };
 
-    ctx.drawImage(document.getElementById('source'), -16, -60);
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__js_draw_airports__["a" /* default */])(ctx);
+    // ctx.drawImage(document.getElementById('source'), -16, -60);
+
+
 
     let toggleButtons = (setter) => {
       if (setter === "disable") {
@@ -1124,85 +1213,6 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
 });
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__calc_waypoints__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__us_airports__ = __webpack_require__(0);
-
-
-
-
-
-const bfsPathGenerator = (airports, start, end) => {
-  let pathGenerations = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__breadth_first_paths__["a" /* default */])(airports, start);
-  let paths = [];
-  for (let pathGen = 0; pathGen < pathGenerations.length; pathGen++) {
-    let currentPathGen = [];
-    for (var airportGen = 0; airportGen < pathGenerations[pathGen].length; airportGen++) {
-      for (let airport = 1; airport < pathGenerations[pathGen][airportGen].length; airport++) {
-        let wayPoints = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__calc_waypoints__["a" /* default */])([pathGenerations[pathGen][airportGen][0].pos,
-          pathGenerations[pathGen][airportGen][airport].pos]);
-          if (pathGenerations[pathGen][airportGen].final) {
-            wayPoints.final = true;
-          }
-          currentPathGen.push(wayPoints);
-        }
-      }
-      paths.push(currentPathGen);
-    }
-  return paths;
-};
-
-
-/* harmony default export */ __webpack_exports__["a"] = bfsPathGenerator;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__draw_airports__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__us_airports__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generate_bfs_paths__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_paths__ = __webpack_require__(3);
-
-
-
-
-
-
-const myClosure = (func) => {
-  return func;
-};
-
-
-const exhaustiveDemo = (canvas, ctx, all_airports, toggleButton) => {
-  let canvasLeft = canvas.offsetLeft;
-  let canvasTop = canvas.offsetTop;
-  canvas.removeEventListener("click", eventListeners.drawPathCB);
-  ctx.clearRect(0,0,940,580);
-  ctx.drawImage(document.getElementById('source'), -16, -60);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__draw_airports__["a" /* default */])(ctx);
-  let drawBFSPaths = myClosure(__WEBPACK_IMPORTED_MODULE_3__draw_paths__["a" /* default */]);
-  let bfsGenerator = myClosure(__WEBPACK_IMPORTED_MODULE_2__generate_bfs_paths__["a" /* default */]);
-  toggleButton("disable");
-  drawBFSPaths(bfsGenerator(all_airports, all_airports["117"], null), toggleButton);
-  document.getElementById("inOrbit").innerHTML = `Possible Choices: N/A`;
-  document.getElementById("inOrbit-percentage").innerHTML = `% of Total: N/A`;
-  document.getElementById("considered").innerHTML = `Considered Paths: 260`;
-  document.getElementById("considered-percentage").innerHTML = `% of Total: 100`;
-  document.getElementById("final").innerHTML = `Final Path Length: 2`;
-};
-
-
-/* harmony default export */ __webpack_exports__["a"] = exhaustiveDemo;
 
 
 /***/ })

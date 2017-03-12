@@ -14,9 +14,16 @@ document.addEventListener("DOMContentLoaded", function(){
     canvas.width = 940;
     canvas.height = 580;
     let ctx = canvas.getContext('2d');
+    var image = new Image();
+    image.src = "map/map.png";
+    image.onload = function() {
+      ctx.drawImage(image, -16, -60);
+      drawAirports(ctx);
+    };
 
-    ctx.drawImage(document.getElementById('source'), -16, -60);
-    drawAirports(ctx);
+    // ctx.drawImage(document.getElementById('source'), -16, -60);
+
+
 
     let toggleButtons = (setter) => {
       if (setter === "disable") {

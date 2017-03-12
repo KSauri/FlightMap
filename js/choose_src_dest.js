@@ -112,7 +112,6 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
     document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
     document.getElementById("inOrbit-percentage").innerHTML = `% of Total: ${Math.round(results[0]/260 * 100)}`;
     document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
-
     document.getElementById("considered-percentage").innerHTML = `% of Total: ${Math.round(results[1]/260 * 100)}`;
     document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
