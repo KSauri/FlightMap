@@ -17,7 +17,7 @@ const generateFinalPath = (endingAirport) => {
 
 const astar = {
     init: function(airports) {
-        for (var airport in airports) {
+        for (let airport in airports) {
           airports[airport].f = 0;
           airports[airport].g = 0;
           airports[airport].g = 0;
@@ -31,10 +31,10 @@ const astar = {
     heap: function() {
         return PriorityQueue();
     },
-    search: function(airports, start, end, diagonal, heuristic) {
+    search: function(airports, start, end) {
         astar.init(airports);
-        heuristic = heuristic || astar.manhattan;
-        var openHeap = astar.heap();
+        let heuristic = astar.pythagoreanDis;
+        let openHeap = astar.heap();
         start.f = 100000000000;
         openHeap.push(start);
         let inOrbit = 0;
@@ -56,16 +56,16 @@ const astar = {
 
             currentAirport.closed = true;
 
-            var neighbors = currentAirport.neighbors;
-            for(var neighbor in neighbors) {
+            let neighbors = currentAirport.neighbors;
+            for(let neighbor in neighbors) {
                 let neighborAirport = airports[neighbor];
                 neighborAirport.cost = neighbors[neighbor];
                 if(neighborAirport.closed) {
                     continue;
                 }
                 paths[paths.length - 1].push(neighborAirport);
-                var gScore = currentAirport.g + neighborAirport.cost;
-                var beenVisited = neighborAirport.visited;
+                let gScore = currentAirport.g + neighborAirport.cost;
+                let beenVisited = neighborAirport.visited;
 
                 if(!beenVisited || gScore < neighborAirport.g) {
 
@@ -88,11 +88,20 @@ const astar = {
 
         return [];
     },
-    manhattan: function(pos0, pos1) {
-        var d1 = Math.abs(pos1.x - pos0.x);
-        var d2 = Math.abs(pos1.y - pos0.y);
-        return d1 + d2;
+    pythagoreanDis: (pos0, pos1) => {
+      var d1 = Math.abs(pos1.x - pos0.x);
+      var d2 = Math.abs(pos1.y - pos0.y);
+      return Math.sqrt(Math.pow(d1,2) + Math.pow(d2,2));
     }
 };
 
 export default astar;
+
+
+
+
+// pythagoreanDis: function(pos0, pos1) {
+//     let d1 = Math.abs(pos1.x - pos0.x);
+//     let d2 = Math.abs(pos1.y - pos0.y);
+//     return d1 + d2;
+// }

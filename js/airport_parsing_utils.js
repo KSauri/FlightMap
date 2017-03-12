@@ -55,8 +55,8 @@ export const parseAirports = (airports, result) => {
 
 
 export const pythagoreanDis = (pos0, pos1) => {
-  var d1 = Math.abs (pos1.x - pos0.x);
-  var d2 = Math.abs (pos1.y - pos0.y);
+  var d1 = Math.abs(pos1.x - pos0.x);
+  var d2 = Math.abs(pos1.y - pos0.y);
   return Math.sqrt(Math.pow(d1,2) + Math.pow(d2,2));
 };
 

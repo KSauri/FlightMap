@@ -32,21 +32,21 @@ function animate(lineSegmentCount, pathGenerations, generation, individualPath, 
 }
 
 
-const drawPathGenerations = (pathGens, toggleButton, generation = 0) => {
+const drawPathGenerations = (pathGens, toggleDrawing, generation = 0) => {
   if (pathGens.length === generation) {
-    toggleButton("enable");
+    toggleDrawing("enable");
     return;}
   while (pathGens[generation].length === 0 || generation === pathGens.length) {
     if (generation === pathGens.length - 1) {
-      toggleButton("enable");
+      toggleDrawing("enable");
       return; }
-    generation ++;
+    generation ++; //Don't skip generations with a length of 0
   }
-  for (var path = 0; path < pathGens[generation].length - 1; path++) {
-    animate(1, pathGens, generation, path, toggleButton); // only one path calls drawPathGenerations to draw the next gen
-  }
-  let curr = pathGens[generation].length - 1;
-  animate(1, pathGens, generation, curr, toggleButton, drawPathGenerations);
+  for (let path = 0; path < pathGens[generation].length - 1; path++) {
+    animate(1, pathGens, generation, path, toggleDrawing);
+    }   // only one path calls drawPathGenerations to draw the next gen
+  let lastPath = pathGens[generation].length - 1;
+  animate(1, pathGens, generation, lastPath, toggleDrawing, drawPathGenerations);
 };
 
 

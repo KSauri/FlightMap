@@ -2,7 +2,7 @@
   <head>
     <title>FlightMapping</title>
     <link rel="stylesheet" type="text/css" href="css/flight_mapper.css">
-    <link href="https://fonts.googleapis.com/css?family=Orbitron:400,700|Yantramanav" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:400,700|Yantramanav|PT+Mono" rel="stylesheet">
   </head>
 
   <body>
@@ -10,19 +10,34 @@
     </div>
     <div class="modal-text-container modal-shared" id="modal-text-container">
       <div class="modal-text">
-        <h3>Digital Path Finding</h3>
-        <p>Your computer needs to find a path from A to B - how does it do it? There
-          are a number of ways, but one that is both efficient and approachable is
-          the A* pathfinding algorithm.  So, how does it work? The algorithm starts
-          at the beginning node (airport in this case) and adds each node it can reach
-          to a pool of "possible choices", and then it picks best one.  How does it
-          decide which is best? Simple! It considers how far it is from start to each
-          new possible node (distance so far) combined with a 'heuristic'.  The heuristic
-          is just a tool it uses to estimate distance from each possible node to the
-          final node.  In this case, we use the manhattan distance to the end node.
-          It does this until it gets to the end node and voila! We have the shortest
-          path in much less work than exhaustive search!  I know what you're thinking
-          and yes it is neat af.</p>
+        <h3>Shortest Paths with the A* Algorithm</h3>
+          <p>
+            Imagine you're a computer. Clearly most of your time will be spent trying
+            to figure out how to take over the world/finding true love, but in your
+            free time you may need to find the shortest path between two points - but
+            how?? Well, dear computer reader, you could use the A* path finding algorithm!
+            But what is it? Let's use flight as an example (if skynet can, why not us?)
+          </p>
+          <p>
+            Well, the algorithm begins at the starting airport, and will choose the
+            best airport it can get to from there.  It does this by weighing A) the cost
+            to get to each airport so far (from start that cost is 0), and B) when
+            using distances, the distance each point it considers is from the destination.
+            Then the algorithm will pick a new point. After that it starts the process over again,
+            now with whatever places the new airport can fly to.
+          </p>
+          <p>
+            You can witness this process in the visualization! The algorithm will pick
+            a new airport and then pull in all connecting airports (unless they've
+            been checked already).
+          </p>
+          <p>
+            There is also a demonstration of "brute force" - where regardless of the
+            path, every airport has to be checked.
+          </p>
+          <p>
+            Now you have the tools to path-find all you want!
+          </p>
         </div>
     </div>
     <div class="container">
