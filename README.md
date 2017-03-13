@@ -4,7 +4,7 @@ FlightMapper is a visualization of the A* path-finding algorithm.
 The visualization uses air flight as a medium to convey the speed and
 efficiency of the A* algorithm.
 
-![alt tag](http://www.giphy.com/gifs/xUA7aQOH23LY52Chos) 
+![FlightMapper](./static_assets/github-gif.gif)
 
 ## Instructions
 
