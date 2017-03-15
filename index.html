@@ -10,33 +10,20 @@
     </div>
     <div class="modal-text-container modal-shared" id="modal-text-container">
       <div class="modal-text">
-        <h3>Shortest Paths with the A* Algorithm</h3>
+        <h3>What is the A* Pathfinding Algorithm?</h3>
           <p>
-            Imagine you're a computer. Clearly most of your time will be spent trying
-            to figure out how to take over the world/finding true love, but in your
-            free time you may need to find the shortest path between two points - but
-            how?? Well, dear computer reader, you could use the A* path finding algorithm!
-            But what is it? Let's use flight as an example (if skynet can, why not us?)
+            Computers need to find paths often - from maps to video games.
+            How do they do it? One solution is the A* algorithm.  It starts
+            at one point and uses two metrics to determine which points to
+            'consider'.  First - how far has it traveled from the origin to
+            get to that next point? Second - how far is that next point from
+            the destination?
           </p>
           <p>
-            Well, the algorithm begins at the starting airport, and will choose the
-            best airport it can get to from there.  It does this by weighing A) the cost
-            to get to each airport so far (from start that cost is 0), and B) when
-            using distances, the distance each point it considers is from the destination.
-            Then the algorithm will pick a new point. After that it starts the process over again,
-            now with whatever places the new airport can fly to.
-          </p>
-          <p>
-            You can witness this process in the visualization! The algorithm will pick
-            a new airport and then pull in all connecting airports (unless they've
-            been checked already).
-          </p>
-          <p>
-            There is also a demonstration of "brute force" - where regardless of the
-            path, every airport has to be checked.
-          </p>
-          <p>
-            Now you have the tools to path-find all you want!
+            You can see this in the visualization! At each turn, the algorithm
+            is considering the best current airport to fly to next. Once chosen,
+            it brings in all the new airports it can fly to, and picks the best
+            among those.  Voila! Now you have a quick pathfinding algorithm!
           </p>
         </div>
     </div>

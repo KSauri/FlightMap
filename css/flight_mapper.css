@@ -126,7 +126,7 @@ h1, h3, button {
   z-index: 1;
   position: fixed;
   width: 600px;
-  height: 650px;
+  height: 450px;
   margin-top: 50px;
   display: flex;
   flex-direction: column;
@@ -137,12 +137,10 @@ h1, h3, button {
 
 .modal-text p {
   font-family: 'PT Mono', monospace;
-  padding: 5px 70px;
-  margin: auto;
+  padding: 5px 10px;
 }
 
 .modal-text h3 {
-  margin: auto;
   font-family: 'PT Mono', monospace;
   font-size: 20px;
 }
