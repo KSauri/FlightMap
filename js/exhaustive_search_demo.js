@@ -20,11 +20,11 @@ const exhaustiveDemo = (canvas, ctx, all_airports, toggleButton) => {
   let bfsGenerator = myClosure(bfsPathGenerator);
   toggleButton("disable");
   drawBFSPaths(bfsGenerator(all_airports, all_airports["117"], null), toggleButton);
-  document.getElementById("inOrbit").innerHTML = `Possible Choices: N/A`;
-  document.getElementById("inOrbit-percentage").innerHTML = `% of Total: N/A`;
-  document.getElementById("considered").innerHTML = `Considered Paths: 260`;
-  document.getElementById("considered-percentage").innerHTML = `% of Total: 100`;
-  document.getElementById("final").innerHTML = `Final Path Length: 3`;
+  document.getElementById("inOrbit").innerHTML = `Possible Choices: <span class="indiv-stat-number">N/A</span>`;
+  document.getElementById("inOrbit-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">N/A<span>`;
+  document.getElementById("considered").innerHTML = `Considered Paths: <span class="indiv-stat-number">260</span>`;
+  document.getElementById("considered-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">100</span>`;
+  document.getElementById("final").innerHTML = `Final Path Length: <span class="indiv-stat-number">3</span>`;
 };
 
 

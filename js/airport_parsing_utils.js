@@ -118,7 +118,7 @@ export const connectNorthDakota = (airports) => {
 };
 
 export const assignHubs = (airports) => {
-  let hubIds = ["148", "17", "136", "90", "83", "48"]; // airport id's of JFK, ORD, LAX, ATL, DFW and SEA
+  let hubIds = ["148", "17", "136", "78", "105", "48"]; // airport id's of JFK, ORD, LAX, ATL, DFW and SEA
   for (var hubOne = 0; hubOne < hubIds.length; hubOne++) {
     for (var hubTwo = hubOne + 1; hubTwo < hubIds.length; hubTwo++) {
       makeNeighbors(airports[hubIds[hubOne]], airports[hubIds[hubTwo]]);

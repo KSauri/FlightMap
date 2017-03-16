@@ -35,9 +35,13 @@ function animate(lineSegmentCount, pathGenerations, generation, individualPath, 
 const drawPathGenerations = (pathGens, toggleDrawing, generation = 0) => {
   if (pathGens.length === generation) {
     toggleDrawing("enable");
+    document.getElementById("destination").className = "light";
+    document.getElementById("origin").className = "light";
     return;}
   while (pathGens[generation].length === 0 || generation === pathGens.length) {
     if (generation === pathGens.length - 1) {
+      document.getElementById("destination").className = "light";
+      document.getElementById("origin").className = "light";
       toggleDrawing("enable");
       return; }
     generation ++; //Don't skip generations with a length of 0

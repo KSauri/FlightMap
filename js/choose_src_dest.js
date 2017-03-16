@@ -69,6 +69,15 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   ctx.drawImage(document.getElementById('source'), -16, -60);
   drawAirports(ctx);
   let srcAndDest = [];
+  window.eventListeners.pointer = (e) => {
+    let locationHash = airportLocationsHash(all_airports);
+    let canvas = document.getElementById("canvas");
+    if (locationHash[[e.layerX, e.layerY]]) {
+      canvas.className = "pointer";
+    } else {
+      canvas.className = "";
+    }
+  };
   window.eventListeners.drawPathCB = drawPath(canvasLeft,
     canvasTop,
     toggleButton,
@@ -76,20 +85,39 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
     srcAndDest,
     canvas);
   canvas.addEventListener("click", eventListeners.drawPathCB);
+  canvas.addEventListener("mousemove", eventListeners.pointer);
 };
 
 let addAirport = (airportsArr, airport) => {
   if (airport && airportsArr.length < 1) {
+    document.getElementById("origin").className = "engaged light";
     return true;
   } else if (airport &&
     airportsArr.length === 1 &&
     airportsArr[0].id !== airport.id) {
+      document.getElementById("destination").className = "engaged light";
       return true;
     }
   else {
     return false;
   }
 };
+
+const airportLocationsHash = (airports) => {
+  let airportsHash = {};
+  for (let airport in airports) {
+    let lng = Math.floor(airports[airport].pos.x) - 4;
+    let lat = Math.floor(airports[airport].pos.y) - 4;
+    for (let lngIter = lng; lngIter < (lng + 8); lngIter++) {
+      for (let latIter = lat; latIter < (lat + 8); latIter++) {
+        airportsHash[[lngIter, latIter]] = true;
+      }
+    }
+  }
+  return airportsHash;
+};
+
+
 
 
 let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event) => {
@@ -102,20 +130,25 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
   let airports = myClosure(all_airports);
   let findAirports = myClosure(findAirportFromCoords);
   let airport = airports[findAirports(airports, x, y)];
-  if (addAirport(startAndFinish, airport)) { startAndFinish.push(airport);}
+  if (addAirport(startAndFinish, airport)) {
+    startAndFinish.push(airport);}
   let drawPaths = myClosure(drawPathGenerations);
   let pathGen = myClosure(pathGenerator);
   if (startAndFinish.length < 3 && airport) { drawChosenAirport(ctx, x, y);}
   if (startAndFinish.length === 2) {
     toggle("disable");
     let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
-    document.getElementById("inOrbit").innerHTML = `Possible Choices: ${results[0]}`;
-    document.getElementById("inOrbit-percentage").innerHTML = `% of Total: ${Math.round(results[0]/260 * 100)}`;
-    document.getElementById("considered").innerHTML = `Considered Paths: ${results[1]}`;
-    document.getElementById("considered-percentage").innerHTML = `% of Total: ${Math.round(results[1]/260 * 100)}`;
-    document.getElementById("final").innerHTML = `Final Path Length: ${results[2]}`;
+    document.getElementById("inOrbit").innerHTML = `Possible Choices: <span class="indiv-stat-number">${results[0]}</span>`;
+    document.getElementById("inOrbit-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[0]/260 * 100)}</span>`;
+    document.getElementById("considered").innerHTML = `Considered Paths: <span class="indiv-stat-number">${results[1]}</span>`;
+    document.getElementById("considered-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[1]/260 * 100)}</span>`;
+    document.getElementById("final").innerHTML = `Final Path Length: <span class="indiv-stat-number">${results[2]}</span>`;
+    document.getElementById("destination").className = "drawing light";
+    document.getElementById("origin").className = "drawing light";
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
+    document.getElementById("canvas").className = "";
     canvas.removeEventListener("click", eventListeners.drawPathCB);
+    canvas.removeEventListener("mousemove", eventListeners.pointer);
   }
 };
 

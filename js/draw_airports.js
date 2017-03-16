@@ -1,9 +1,11 @@
 import all_airports from './us_airports';
 
 
-const drawAirports = (ctx) => {
-  let hubs = ["148","17","136","90","83","48"];
 
+
+const drawAirports = (ctx) => {
+  let hubs = ["148","17","136","78","105","48"];
+  let canvas = document.getElementById("canvas");
   for (let airport in all_airports) {
     if (airport === "size") { continue; }
     ctx.beginPath();
@@ -22,7 +24,3 @@ const drawAirports = (ctx) => {
 };
 
 export default drawAirports;
-
-
-// let x = event.pageX - canvasLeft;
-// let y = event.pageY - canvasTop;

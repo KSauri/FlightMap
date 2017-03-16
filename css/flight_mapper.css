@@ -1,6 +1,6 @@
 
 
-h1, h3, button {
+h1, h3, button, span, div {
   font-family: 'Orbitron', sans-serif;
 }
 
@@ -85,8 +85,47 @@ h1, h3, button {
 }
 
 .indiv-stat h3 {
-  font-size: 16px;
-  padding: 0px 3px;
+  font-size: 14px;
+  padding: 0px 2px;
+}
+
+.indiv-stat-number {
+  font-size: 14px;
+  padding: 0px 0px;
+  color: red;
+}
+
+.light-container {
+  width: 130px;
+  height: 100px;
+}
+
+.light {
+  width: 100%;
+  padding: 8px 0px;
+  background-color: rgba(136, 2, 2, 0.96);
+  margin: 15px 0px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    box-shadow:
+        0 1px 0 rgba(0,0,0,.25),
+        inset 0 1px 2px rgba(255,255,255,.67),
+        inset 0 -1px 0 rgba(0,0,0,.14);
+}
+
+.engaged {
+  background-color: rgb(235, 36, 36);
+}
+
+.drawing {
+  background-color: rgba(0, 163, 36, 0.91);
 }
 
 .stats button {
@@ -94,18 +133,16 @@ h1, h3, button {
   width: 180px;
   height: 33px;
   font-weight: 700;
-  background-color: rgba(223, 16, 16, 0.93);
+  background-color: rgba(30, 79, 173, 0.89);
   margin: 15px 0px;
-  border: 1px solid rgb(82, 83, 83);
+  border: 1px solid rgba(30, 79, 173, 0.89);
   border-radius: 5px;
 }
 
-.stats button:focus {
-  background-color: rgba(223, 16, 16, 0.65);
-}
+
 
 .stats button:disabled {
-  background-color: lightgray;
+  background-color: darkgray;
   color: rgba(223, 16, 16, 0.93);
 }
 
@@ -135,6 +172,15 @@ h1, h3, button {
   border-radius: 3px;
 }
 
+button:focus {
+  outline: 0;
+  background-color: rgba(30, 79, 173, 0.80);
+}
+
+button:hover {
+  cursor: pointer;
+}
+
 .modal-text p {
   font-family: 'PT Mono', monospace;
   padding: 5px 10px;
@@ -143,7 +189,7 @@ h1, h3, button {
 .modal-text h3 {
   font-family: 'PT Mono', monospace;
   font-size: 20px;
-  
+
 }
 
 .modal-text-container {
@@ -153,4 +199,31 @@ h1, h3, button {
 
 .modal-hidden {
   display: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.links {
+  display: flex;
+}
+
+.links i {
+  font-size: 33px;
+  margin: 10px 40px;
+}
+
+.links i:hover {
+  color: gray;
+}
+
+.link-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.link-col span {
+  font-size: 12px;
 }
