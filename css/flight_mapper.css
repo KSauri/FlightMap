@@ -86,7 +86,7 @@ h1, h3, button, span, div {
 
 .indiv-stat h3 {
   font-size: 14px;
-  padding: 0px 2px;
+  padding: 0px 4px;
 }
 
 .indiv-stat-number {
@@ -207,6 +207,11 @@ button:hover {
 
 .links {
   display: flex;
+}
+
+.links a {
+  color: black;
+  text-decoration: none;
 }
 
 .links i {
