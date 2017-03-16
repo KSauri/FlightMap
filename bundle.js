@@ -905,15 +905,15 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   ctx.drawImage(document.getElementById('source'), -16, -60);
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__draw_airports__["a" /* default */])(ctx);
   let srcAndDest = [];
-  window.eventListeners.pointer = (e) => {
-    let locationHash = airportLocationsHash(all_airports);
-    let canvas = document.getElementById("canvas");
-    if (locationHash[[e.layerX, e.layerY]]) {
-      canvas.className = "pointer";
-    } else {
-      canvas.className = "";
-    }
-  };
+  // window.eventListeners.pointer = (e) => {
+  //   let locationHash = airportLocationsHash(all_airports);
+  //   let canvas = document.getElementById("canvas");
+  //   if (locationHash[[e.layerX, e.layerY]]) {
+  //     canvas.className = "pointer";
+  //   } else {
+  //     canvas.className = "";
+  //   }
+  // };
   window.eventListeners.drawPathCB = drawPath(canvasLeft,
     canvasTop,
     toggleButton,
@@ -921,7 +921,7 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
     srcAndDest,
     canvas);
   canvas.addEventListener("click", eventListeners.drawPathCB);
-  canvas.addEventListener("mousemove", eventListeners.pointer);
+  // canvas.addEventListener("mousemove", eventListeners.pointer);
 };
 
 let addAirport = (airportsArr, airport) => {
@@ -984,7 +984,7 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
     document.getElementById("canvas").className = "";
     canvas.removeEventListener("click", eventListeners.drawPathCB);
-    canvas.removeEventListener("mousemove", eventListeners.pointer);
+    // canvas.removeEventListener("mousemove", eventListeners.pointer);
   }
 };
 
