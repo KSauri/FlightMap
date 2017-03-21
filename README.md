@@ -4,7 +4,7 @@ FlightMapper is a visualization of the A* path-finding algorithm.
 The visualization uses air flight as a medium to convey the speed and
 efficiency of the A* algorithm.
 
-![FlightMapper](./static_assets/github-gif.gif)
+![FlightMapper](./static_assets/github-gif2.gif)
 
 ## Instructions
 
@@ -16,7 +16,7 @@ The primary pedagogical tool is the "choose source and destination" button,
 which will run A* on the source and destination airports and demonstrate
 the choices the algorithm makes at each turn.  
 
-##Technologies Used
+## Technologies Used
 
 #### [Pandas](http://pandas.pydata.org/)
 
@@ -43,9 +43,9 @@ const drawLineSegment = (pos, idx) => {
 };
 ```
 
-##Technical Implementation
+## Technical Implementation
 
-###Path Generations
+### Path Generations
 
 The A* algorithm works by choosing the best currently available node,
 drawing in newly connected nodes, and repeating this process until
