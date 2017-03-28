@@ -158,11 +158,10 @@ h1, h3, button, span, div {
 
 .modal-text {
   background-color: lightgray;
-  /*background-image: url('../static_assets/metal_background.jpg');*/
   opacity: 1;
   z-index: 1;
   position: fixed;
-  width: 600px;
+  width: 700px;
   height: 450px;
   margin-top: 50px;
   display: flex;
@@ -217,7 +216,7 @@ button:hover {
 .links i {
   font-size: 33px;
   margin: 10px 40px;
-  
+
 }
 
 .links i:hover {

@@ -13,18 +13,25 @@
       <div class="modal-text">
         <h3>What is the A* Pathfinding Algorithm?</h3>
           <p>
-            Computers often need to find the shortest path - from maps to video
-            games. How do they do it? One solution is the A* algorithm.  It starts
-            at one point and uses two metrics to determine which points to
+            It's a typical day, you're hungry and you look on your phone
+            because you want to go to Five Guys.  How does an app figure out
+            the shortest path between you and those delicious burgers? It uses
+            a graphing algorithm! A graph is just a structure with points
+            connected by edges (a road network, a social network, etc). But
+            still, how does it find the shortest path?
+          <p>
+            One solution is the A* algorithm.  It starts at one
+            point and uses two metrics to determine which points to
             'consider'.  First - how far has it traveled from the origin to
             get to that next point? Second - how far is that next point from
             the destination?
           </p>
           <p>
             You can see this in the visualization! At each turn, the algorithm
-            is considering the best current airport to fly to next. Once chosen,
-            it brings in all the new airports it can fly to, and picks the best
-            among those.  Voila! Now you have a quick pathfinding algorithm!
+            is <strong>considering</strong> the best current airport to fly to
+            next. It will <strong>choose</strong> one, and then pull in all
+            the new airports it can get to from that new point.  Then, it will
+            repeat that process.  
           </p>
         </div>
     </div>
