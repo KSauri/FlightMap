@@ -25,12 +25,12 @@ const findAirportFromCoords = (airports, x, y) => {
   let xAirports = [];
   let yAirports = [];
   for (let airport in airports) {
-    if (Math.abs(airports[airport].pos.x - x) < 10) {
+    if (Math.abs(airports[airport].pos.x - x) < 5) {
       xAirports.push(airport);
     }
   }
   for (let airport in airports) {
-    if (Math.abs(airports[airport].pos.y - y) < 10) {
+    if (Math.abs(airports[airport].pos.y - y) < 5) {
       yAirports.push(airport);
     }
   }
@@ -69,15 +69,6 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
   ctx.drawImage(document.getElementById('source'), -16, -60);
   drawAirports(ctx);
   let srcAndDest = [];
-  // window.eventListeners.pointer = (e) => {
-  //   let locationHash = airportLocationsHash(all_airports);
-  //   let canvas = document.getElementById("canvas");
-  //   if (locationHash[[e.layerX, e.layerY]]) {
-  //     canvas.className = "pointer";
-  //   } else {
-  //     canvas.className = "";
-  //   }
-  // };
   window.eventListeners.drawPathCB = drawPath(canvasLeft,
     canvasTop,
     toggleButton,
@@ -85,7 +76,6 @@ const chooseSrcDest = (canvas, ctx, all_airports, toggleButton) => {
     srcAndDest,
     canvas);
   canvas.addEventListener("click", eventListeners.drawPathCB);
-  // canvas.addEventListener("mousemove", eventListeners.pointer);
 };
 
 let addAirport = (airportsArr, airport) => {
@@ -118,7 +108,15 @@ const airportLocationsHash = (airports) => {
 };
 
 
-
+let updateStats = (results) => {
+  document.getElementById("inOrbit").innerHTML = `Possible Choices: <span class="indiv-stat-number">${results[0]}</span>`;
+  document.getElementById("inOrbit-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[0]/260 * 100)}</span>`;
+  document.getElementById("considered").innerHTML = `Considered Paths: <span class="indiv-stat-number">${results[1]}</span>`;
+  document.getElementById("considered-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[1]/260 * 100)}</span>`;
+  document.getElementById("final").innerHTML = `Final Path Length: <span class="indiv-stat-number">${results[2]}</span>`;
+  document.getElementById("destination").className = "drawing light";
+  document.getElementById("origin").className = "drawing light";
+};
 
 let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event) => {
   let startAndFinish = sAF;
@@ -138,19 +136,15 @@ let drawPath = (canvasLeft, canvasTop, toggleButton, ctx, sAF, canvas) => (event
   if (startAndFinish.length === 2) {
     toggle("disable");
     let results = astarResults.search(airports, startAndFinish[0], startAndFinish[1])[1];
-    document.getElementById("inOrbit").innerHTML = `Possible Choices: <span class="indiv-stat-number">${results[0]}</span>`;
-    document.getElementById("inOrbit-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[0]/260 * 100)}</span>`;
-    document.getElementById("considered").innerHTML = `Considered Paths: <span class="indiv-stat-number">${results[1]}</span>`;
-    document.getElementById("considered-percentage").innerHTML = `% of Total: <span class="indiv-stat-number">${Math.round(results[1]/260 * 100)}</span>`;
-    document.getElementById("final").innerHTML = `Final Path Length: <span class="indiv-stat-number">${results[2]}</span>`;
-    document.getElementById("destination").className = "drawing light";
-    document.getElementById("origin").className = "drawing light";
+    updateStats(results);
     drawPaths(pathGen(airports, startAndFinish[0], startAndFinish[1]), toggle);
     document.getElementById("canvas").className = "";
     canvas.removeEventListener("click", eventListeners.drawPathCB);
-    // canvas.removeEventListener("mousemove", eventListeners.pointer);
   }
 };
+
+
+
 
 
 export default chooseSrcDest;
